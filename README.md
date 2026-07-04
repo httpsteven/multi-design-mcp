@@ -1,0 +1,119 @@
+# Multi-Design MCP
+
+An MCP (Model Context Protocol) server that packages **agency-grade web design intelligence** so Claude — or any MCP client — can create premium websites and generate large batches of high-quality pages that stay visually coherent.
+
+It encodes a premium web methodology as callable tools: curated art directions, complete design systems, narrative page blueprints, motion and copywriting standards, hard anti-pattern guards, and a pre-ship polish checklist. Instead of hoping the model "designs well," every build starts from an explicit design contract.
+
+## What's inside
+
+**10 curated design directions** (the "multi" in multi-design):
+
+| Style | Best for |
+|---|---|
+| `editorial-luxury` | event venues, hotels, luxury real estate |
+| `cinematic-noir` | photographers, film, nightlife, automotive |
+| `swiss-minimal` | studios, architecture, consultancies |
+| `brutalist-statement` | agencies, music, streetwear, campaigns |
+| `organic-warm` | wellness, cafés, boutique hotels, retreats |
+| `art-deco-opulent` | bars, ballrooms, jewelry, theaters |
+| `tech-precision` | dev tools, hardware, fintech, AI products |
+| `gallery-white` | artists, galleries, premium portfolios |
+| `retro-editorial` | magazines, coffee, indie studios |
+| `monochrome-fashion` | fashion, beauty, lookbooks |
+| `craftsman-trust` | glass companies, contractors, roofing, local trades |
+| `care-trust` | health clinics, dental, therapy, veterinary, senior care |
+| `ivory-elegance` | light-mode venues, bridal, boutique hotels, spas |
+
+Each style is a complete art direction: typography pairing (Google Fonts), palette with usage logic, motion character with exact easings, imagery direction, signature details, and style-specific prohibitions.
+
+**16 page blueprints**: `home`, `about`, `services`, `gallery`, `contact`, `pricing`, `faq`, `blog-index`, `blog-post`, `product`, `case-study`, `team`, `locations`, `careers`, `landing-local-service`, `coming-soon` — each a narrative section structure with per-section copywriting guidance. `landing-local-service` is the batch workhorse for lead-gen pages (quote form, proof of work, credentials, service area, reviews) — repeat it per city or per service in `plan_site`.
+
+**Composition layer** — every style also defines its physical structure, not just its look:
+- a **hero architecture** (immersive full-bleed / conversion split-form with quote card / editorial split-media / typographic / ceremonial framed / fashion campaign),
+- a **gallery pattern** (asymmetric editorial grid / horizontal scroll strip / museum single-stack / masonry columns),
+- a **content layout rotation** (text-media splits, offset narrow columns, full-bleed bands, index lists, sticky narrative splits) so adjacent sections never repeat,
+- allowed **image crops and treatment CSS** (grading, masks, borders),
+- **nav and footer structure** (overlay / solid bar / edge caps; column / mega-CTA / minimal line).
+
+This spec appears in every build brief ("Layout & Composition") and is physically implemented by `scaffold_page`, which outputs a working page: real nav, the style's hero (including forms where the style is conversion-driven), 12-column grid layouts, gallery markup, `<details>` FAQ accordions, footer — with placeholder images (picsum.photos) marked `<!-- REEMPLAZAR -->` for curation.
+
+**Variation engine** — no two sites from the same style share bones. Every style declares which hero architectures (now 10, including kinetic typography with an accessible static h1, bento with differentiated cells, and broken-grid collage), gallery patterns (now 6, including bento media grids and sticky stacked panels), and signature flourishes it can legitimately wear. A `variationSeed` (any positive integer, deterministic) picks an alternate combination and 2–3 flourishes from a 16-item library — grain overlay, marquee ticker, scroll progress, masked line reveals, custom cursor, magnetic buttons, image trail, text scramble, wordmark preloader, parallax, view transitions, pinned story scenes, WebGL accent, oversized footer wordmark, variable-font hover. Cheap flourishes are physically scaffolded; the rest ship as precise implementation specs inside the HTML. Alternates respect taste: a clinic can get a bento hero, never a collage or text scramble.
+
+**Trend grounding** — `get_design_trends` returns a researched catalog (Awwwards SOTY patterns, post-hype 2026 retrospectives) with honest risk notes: kinetic type needs a static accessible h1; bento at saturation needs differentiation; 3D is one meaningful accent, never a theme park; pinned scenes must pin, not hijack.
+
+**Modern stack intelligence** — [stacks.js](src/data/stacks.js) is a curated, verified-2026 library catalog with when-to-use and premium-restraint notes: GSAP (**100% free since April 2025 including SplitText/ScrambleText/DrawSVG/MorphSVG** — the briefs tell builders to stop hand-rolling these), Lenis momentum scroll (auto-wired into scaffolds via `gsap.ticker`, deliberately skipped for trust-sector styles where native scroll reads more honest), Motion, anime.js v4, OGL vs Three.js guidance, PhotoSwipe, Embla, native View Transitions API, Alpine for the EN/ES toggle, and Astro as the batch-generation upgrade path. Recipes cover the static-host realities: forms with no backend (WhatsApp deep link + Formspree), page transitions on MPA, 50-city-page generation. Every flourish now names its exact library. Briefs get a "Modern Stack" section automatically; `plan_site` adds batch advice at 5+ pages.
+
+**Mobile-usable by contract** — every layer enforces it. Briefs carry a "Mobile Mandate" (mobile-first for local businesses, 44px touch targets, thumb-zone CTAs, no hover-dependent info, svh units, zero overflow at 360px, pointer flourishes gated behind `(pointer: fine)`). `quality_standards` has a `mobile` section for audits. Scaffolds ship a **working hamburger menu** (aria-expanded, full-screen panel in the brand's design language, closes on link tap/Escape, scroll-locked body), a **sticky Call/WhatsApp action bar** on conversion contexts (trades/clinic styles + lead-gen/contact/pricing pages, safe-area-inset padded), and 16px-floor form inputs so iOS never auto-zooms.
+
+**Language support**: set `business.language` to `'en'`, `'es'`, or `'bilingual en/es'`. Single-language briefs enforce all copy rules in that language; bilingual briefs mandate a language toggle with a shared I18N strings object, both languages written with equal care. Scaffolds set `<html lang>` accordingly.
+
+## Tools
+
+| Tool | Purpose |
+|---|---|
+| `list_design_styles` / `get_design_style` | Browse and inspect art directions |
+| `recommend_style` | Ranked style recommendation for an industry + mood |
+| `list_page_blueprints` / `get_page_blueprint` | Browse page narrative structures |
+| `create_design_system` | Full token set: CSS variables, font imports, spacing, motion spec |
+| `compose_build_prompt` | Complete agency-grade build brief for one page |
+| `plan_site` | **Batch generation**: shared design system + consistency rules + a ready build brief for every page |
+| `scaffold_page` | Actual starter HTML: tokens, semantic sections, GSAP reveals, reduced-motion support |
+| `quality_standards` | Anti-patterns, motion/copy rules, polish checklist, decision hierarchy |
+| `generate_variations` | Preview seeded variations of a style: alternate hero + gallery + layout order + flourishes |
+| `get_design_trends` | SOTA catalog (July 2026): trends with premium-use guidance + the full flourish library |
+| `recommend_stack` | Modern library catalog + recipes: GSAP (fully free incl. SplitText), Lenis, Motion, OGL, PhotoSwipe, Astro… |
+
+Plus an MCP prompt, `premium-website`, that runs the full workflow end to end.
+
+## Install
+
+```bash
+cd multi-design-mcp
+npm install
+```
+
+Register with Claude Code:
+
+```bash
+claude mcp add multi-design -s user -- node /Users/stevencarrillo/Desktop/PROJECTS/web-template/multi-design-mcp/src/index.js
+```
+
+Or add to any MCP client config:
+
+```json
+{
+  "mcpServers": {
+    "multi-design": {
+      "command": "node",
+      "args": ["/Users/stevencarrillo/Desktop/PROJECTS/web-template/multi-design-mcp/src/index.js"]
+    }
+  }
+}
+```
+
+## Usage patterns
+
+**One premium site** — "Build a website for my event venue Casa Vesperalta":
+1. `recommend_style` → pick the direction
+2. `plan_site` → sitemap + shared design system + per-page briefs
+3. Execute each page's `buildPrompt` (optionally starting from `scaffold_page`)
+4. Audit against `quality_standards` before shipping
+
+**Mass page generation** — many landing pages, city pages, service pages:
+call `plan_site` once with repeated page types and different `slug`/`notes`. Every generated brief shares the exact same token block and consistency rules, so 5 or 50 pages stay coherent.
+
+**Design QA** — run `quality_standards` against any existing page as an audit contract.
+
+## Test
+
+```bash
+npm test   # spins up the server over stdio and exercises every tool
+```
+
+## Notes
+
+- Scaffolds are deliberately spare structural bases with real tokens — the premium finish (signature details, curated imagery, final copy, refined motion) is crafted by the model on top, guided by the build brief.
+- Everything targets static hosting (GitHub Pages ready); the `react` stack option produces briefs for exportable React/Next instead.
+- The server never invents business facts — briefs instruct the builder to mark unknowns `[TO CONFIRM]`.
+- `examples/` contains generated scaffolds across styles and variation seeds you can open in a browser.
+- All brand names in examples, tests, and docs (Casa Vesperalta, Vitrelora Glass Co., Miravalen Family Health, Quorvane Systems, Terraza Alborela) are **coined fictional names** verified against the web for zero collision with real businesses. Any resemblance is coincidental — replace with the real client's name at build time.

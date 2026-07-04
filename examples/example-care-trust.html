@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Miravalen Family Health — Home / Landing</title>
+  <meta name="description" content="Home / Landing page for Miravalen Family Health." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      /* Care Trust — generated design tokens */
+      --color-bg: #ffffff;
+      --color-surface: #f7fafa;
+      --color-text: #1a2e2d;
+      --color-text-muted: #4a6663;
+      --color-accent: #0f6b5c;
+      --color-line: #e0ecea;
+      --font-display: 'Merriweather', Georgia, serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+      --size-hero: clamp(2.25rem, 5vw, 4rem);
+      --size-h2: clamp(1.625rem, 3vw, 2.5rem);
+      --size-body: 1.0625rem;
+      --size-small: 0.875rem;
+      --ease-brand: cubic-bezier(0.33, 1, 0.68, 1);
+      --space-2xs: 0.25rem;
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 2rem;
+      --space-lg: 4rem;
+      --space-xl: 8rem;
+      --space-section: clamp(6rem, 12vw, 11rem);
+      --gutter: clamp(1.25rem, 4vw, 4rem);
+      --measure: 65ch;
+    }
+
+    /* Base — Care Trust. Palette logic: White with pale-teal surfaces and a deep teal accent for actions and headings. Soft radii (6–24px) and soft shadows are correct here — this style rounds where others sharpen. Red only for genuine emergencies. */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); font-size: var(--size-body); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    h1, h2, h3 { font-family: var(--font-display); line-height: 1.05; font-weight: 500; }
+    h1 { font-size: var(--size-hero); }
+    h2 { font-size: var(--size-h2); }
+    a { color: inherit; }
+    img { max-width: 100%; height: auto; display: block; }
+    figure { margin: 0; }
+    .eyebrow { font-size: var(--size-small); letter-spacing: .2em; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: var(--space-sm); }
+    .hero-title { max-width: 14ch; }
+    .hero-sub { max-width: 44ch; color: var(--color-text-muted); margin-top: var(--space-sm); }
+    .cta { display: inline-block; margin-top: var(--space-md); padding: .9em 2.2em; border: 1px solid var(--color-accent); color: var(--color-accent); text-decoration: none; font-size: var(--size-small); letter-spacing: .15em; text-transform: uppercase; transition: background .3s var(--ease-brand), color .3s var(--ease-brand); }
+    .cta:hover, .cta:focus-visible { background: var(--color-accent); color: var(--color-bg); }
+    button.cta { font-family: inherit; cursor: pointer; background: var(--color-accent); color: var(--color-bg); border: none; }
+    .section { padding: var(--space-section) var(--gutter); border-top: 1px solid var(--color-line); }
+    .section-body { max-width: var(--measure); margin-top: var(--space-md); }
+
+    /* 12-col grid + content layouts */
+    .grid-12 { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--space-md); align-items: start; }
+    .layout-split .g-text { grid-column: span 5; }
+    .layout-split .g-media, .layout-split .inquiry-form { grid-column: span 7; }
+    .layout-split--rev .g-media { grid-column: span 7; } .layout-split--rev .g-text { grid-column: span 5; }
+    .layout-offset .section-numeral { grid-column: span 2; font-family: var(--font-display); font-size: var(--size-h2); color: var(--color-text-muted); opacity: .5; }
+    .layout-offset .g-offset-content { grid-column: 3 / span 7; }
+    .band { position: relative; margin: 0 calc(-1 * var(--gutter)); }
+    .band img { width: 100%; height: 70vh; object-fit: cover; }
+    .band-caption { position: absolute; inset: auto 0 0 0; padding: var(--space-lg) var(--gutter); background: linear-gradient(to top, rgba(0,0,0,.75), transparent); color: #fff; }
+    .index-list { list-style: none; padding: 0; margin-top: var(--space-lg); }
+    .index-row { display: grid; grid-template-columns: 3rem 1fr 2fr auto; gap: var(--space-md); align-items: baseline; padding: var(--space-md) 0; border-top: 1px solid var(--color-line); }
+    .index-num { font-size: var(--size-small); color: var(--color-text-muted); }
+    .index-title { font-size: 1.375rem; }
+    .index-desc, .index-meta { color: var(--color-text-muted); }
+    .layout-sticky .sticky-col { grid-column: span 5; position: sticky; top: 15vh; align-self: start; }
+    .layout-sticky .media-stack { grid-column: 7 / span 6; display: grid; gap: var(--space-lg); }
+    .layout-centered { max-width: var(--measure); margin: 0 auto; text-align: center; }
+    .ornament-rule { width: 4rem; margin: 0 auto var(--space-md); border: 0; border-top: 1px solid var(--color-accent); }
+
+    /* FAQ + CTA + forms */
+    .faq-list { margin-top: var(--space-lg); max-width: var(--measure); }
+    .faq-item { border-top: 1px solid var(--color-line); padding: var(--space-sm) 0; }
+    .faq-item summary { cursor: pointer; font-weight: 500; padding: var(--space-xs) 0; }
+    .faq-item p { color: var(--color-text-muted); padding: var(--space-xs) 0 var(--space-sm); max-width: var(--measure); }
+    .cta-band { text-align: center; max-width: 44rem; margin: 0 auto; }
+    label { display: grid; gap: .35rem; font-size: var(--size-small); }
+    /* 16px floor prevents iOS auto-zoom on focus */
+    input, select, textarea { font: inherit; font-size: max(16px, 1em); color: inherit; background: transparent; border: 1px solid var(--color-line); padding: .8em; width: 100%; }
+    .inquiry-form { display: grid; gap: var(--space-sm); }
+
+    /* Nav */
+    .nav { display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm) var(--gutter); font-size: var(--size-small); }
+    .nav-toggle { display: none; background: none; border: 1px solid var(--color-line); color: inherit; font: inherit; font-size: var(--size-small); letter-spacing: .12em; text-transform: uppercase; padding: .5em 1em; min-height: 44px; cursor: pointer; }
+    .nav-brand { font-family: var(--font-display); font-size: 1.25rem; text-decoration: none; }
+    .nav-links { display: flex; gap: var(--space-md); margin-left: auto; }
+    .nav-links a { text-decoration: none; letter-spacing: .12em; text-transform: uppercase; }
+    .cta--nav { margin: 0; padding: .6em 1.4em; }
+    .nav--transparent-overlay { position: absolute; inset: 0 0 auto 0; z-index: 2; }
+    .nav--solid-bar { position: sticky; top: 0; z-index: 10; background: var(--color-bg); border-bottom: 1px solid var(--color-line); }
+    .nav--edge-caps { justify-content: space-between; text-transform: uppercase; letter-spacing: .2em; border-bottom: 1px solid var(--color-line); }
+    .nav--edge-caps .nav-links { margin-left: 0; }
+
+    /* Hero (split-media) */
+    .hero--split-media { display: grid; grid-template-columns: 6fr 6fr; gap: var(--gutter); align-items: center; min-height: 88svh; padding: var(--space-xl) var(--gutter) var(--space-lg); }
+    .trust-markers { margin-top: var(--space-md); font-size: var(--size-small); color: var(--color-text-muted); }
+
+    /* Gallery (editorial-asym) */
+    .gallery-asym { row-gap: var(--space-lg); }
+    .g-7 { grid-column: span 7; } .g-5 { grid-column: span 5; } .g-8 { grid-column: 3 / span 8; } .g-4 { grid-column: span 4; }
+    .g-offset { margin-top: var(--space-xl); }
+
+    /* Image treatment — Care Trust */
+    .media { border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
+
+
+    /* Mobile sticky action bar (conversion contexts) */
+    .mobile-cta-bar { display: none; }
+    @media (max-width: 900px) {
+      .mobile-cta-bar { display: flex; position: fixed; inset: auto 0 0 0; z-index: 40; border-top: 1px solid var(--color-line); background: var(--color-bg); padding-bottom: env(safe-area-inset-bottom); }
+      .mcb-btn { flex: 1; min-height: 52px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: var(--size-small); letter-spacing: .12em; text-transform: uppercase; }
+      .mcb-btn--primary { background: var(--color-accent); color: var(--color-bg); }
+      body.has-mobile-bar { padding-bottom: calc(52px + env(safe-area-inset-bottom)); }
+    }
+
+    /* Footer (columns) */
+    .site-footer { padding: var(--space-lg) var(--gutter); border-top: 1px solid var(--color-line); color: var(--color-text-muted); font-size: var(--size-small); }
+    .footer--minimal-line { display: flex; justify-content: space-between; gap: var(--space-md); }
+    .footer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-md); margin-bottom: var(--space-md); }
+    .footer-brand { font-family: var(--font-display); font-size: 1.25rem; color: var(--color-text); }
+    .footer-mega { text-align: center; padding: var(--space-xl) 0; }
+    .footer-legal { border-top: 1px solid var(--color-line); padding-top: var(--space-sm); }
+
+    /* Reveal + reduced motion */
+    [data-reveal] { opacity: 0; visibility: hidden; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      [data-reveal] { opacity: 1; visibility: visible; }
+    }
+
+    /* Responsive collapse */
+    @media (max-width: 900px) {
+      .grid-12 { grid-template-columns: 1fr; }
+      .layout-split .g-text, .layout-split .g-media, .layout-split .inquiry-form,
+      .layout-offset .g-offset-content, .layout-sticky .sticky-col, .layout-sticky .media-stack,
+      .g-7, .g-5, .g-8, .g-4 { grid-column: auto; }
+      .g-offset { margin-top: 0; }
+      .layout-sticky .sticky-col { position: static; }
+      .section-numeral { display: none; }
+      .hero--split-form, .hero--split-media, .hero--campaign { grid-template-columns: 1fr; min-height: 0; }
+      .hero--campaign .hero-copy { margin-right: 0; padding: var(--space-lg) var(--gutter); }
+      .hero--campaign .hero-media { height: 70vh; }
+      .index-row { grid-template-columns: 2.5rem 1fr; }
+      .index-desc { grid-column: 2; } .index-meta { grid-column: 2; }
+      .masonry { columns: 1; }
+      .single-stack .work { max-width: 100%; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      /* Mobile menu: hamburger + full-screen panel in the brand's language */
+      .nav-toggle { display: inline-flex; align-items: center; margin-left: auto; }
+      .cta--nav { display: none; }
+      .nav-links { display: none; position: fixed; inset: 0; z-index: 25; background: var(--color-bg); flex-direction: column; justify-content: center; gap: var(--space-md); padding: var(--space-lg) var(--gutter); margin-left: 0; font-size: 1.5rem; }
+      body.nav-open .nav-links { display: flex; }
+      body.nav-open { overflow: hidden; }
+      body.nav-open .nav { z-index: 30; }
+      .nav-links a { min-height: 44px; display: inline-flex; align-items: center; }
+      .faq-item summary { min-height: 44px; display: flex; align-items: center; }
+      .band img { height: 55vh; }
+      .hscroll .media { height: 45vh; }
+      .k-line, .k-track { font-size: clamp(2.4rem, 13vw, 4.5rem); }
+      .bento, .bento-media { grid-template-columns: 1fr 1fr; }
+      .bento-anchor, .b-tall, .b-wide, .b-stat, .bm-a, .bm-b, .bm-c, .bm-d, .bm-e { grid-column: span 2; grid-row: auto; }
+      .b-small { grid-column: span 1; }
+      .collage { height: auto; }
+      .c-img { position: static; width: 100%; transform: none; margin-bottom: var(--space-sm); }
+      .hero-content--collage { margin-top: 0; }
+      .margin-caption { display: none; }
+      .stack-panel img { height: 40vh; }
+    }
+
+    /* TODO(build): scaffold gives the structural skeleton — apply the style's
+       signature details before shipping:
+       - Rounded cards with soft shadows — differentiated by content, never three identical
+       - Provider profiles with photo, credentials, languages spoken
+       - Transparent pricing/insurance/membership blocks
+       - Appointment CTA visible in every viewport (header + section-level)
+       - Hours, locations, and phone answered within one glance */
+  </style>
+</head>
+<body class="has-mobile-bar">
+  <a href="#main" style="position:absolute;left:-999px" onfocus="this.style.left='1rem'" onblur="this.style.left='-999px'">Skip to content</a>
+
+    <!-- Nav (solid-bar): Logo, services, providers, locations + teal 'Book Appointment' button and visible phone. Sticky on mobile. -->
+    <nav class="nav nav--solid-bar" aria-label="Main">
+      <a class="nav-brand" href="#top">Miravalen Family Health</a>
+      <div class="nav-links" id="nav-links">
+        <a href="#presentation">[Aspirational Presentation]</a>
+        <a href="#gallery">[Curated Gallery / Showcase]</a>
+        <a href="#offer">[What We Offer / Event Types / Services]</a>
+        <a href="#differentiators">[Differentiators]</a>
+      </div>
+      <a class="cta cta--nav" href="#cta">[Nav CTA]</a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links">Menu</button>
+    </nav>
+
+  <main id="main">
+    <!-- Hero (split-media): Left: headline, reassurance subline, dual CTA (book + call), trust markers (same-day · bilingual · insurance). Right: rounded-mask photo of real staff/facility. -->
+    <header class="hero hero--split-media" id="top">
+      <div class="hero-copy" data-reveal-group>
+        <p class="eyebrow" data-reveal>FAMILY HEALTH CLINIC</p>
+        <!-- Headline rules: under 10 words, competitor-swap-proof, written only for Miravalen Family Health -->
+        <h1 class="hero-title" data-reveal>[Headline for Miravalen Family Health]</h1>
+        <p class="hero-sub" data-reveal>[One supporting line. Optional.]</p>
+        <a class="cta" href="#cta" data-reveal>[Primary action]</a>
+        <p class="trust-markers" data-reveal>[trust marker] · [trust marker] · [trust marker]</p>
+      </div>
+      <figure class="media"><!-- REEMPLAZAR: hero image — 4:5, treated per style -->
+        <img src="https://picsum.photos/seed/miravalen-family-health-7/800/1000" alt="[describe: hero image — 4:5, treated per style]" loading="lazy" width="800" height="1000" />
+      </figure>
+    </header>
+
+    <section class="section section--presentation" id="presentation">
+      <!-- Aspirational Presentation: Introduce who this is for and what it feels like — not a feature list.
+         Copy guidance: 2–3 short paragraphs of editorial voice. Write to one reader, not a market segment.
+         Layout: split-5-7 -->
+      <div class="grid-12 layout-split">
+        <div class="g-text" data-reveal-group>
+        <p class="eyebrow" data-reveal>[Aspirational Presentation label]</p>
+        <h2 data-reveal>[Aspirational Presentation headline — specific to Miravalen Family Health]</h2>
+        <div class="section-body" data-reveal>[Content per guidance above]</div>
+      </div>
+        <figure class="media g-media"><!-- REEMPLAZAR: Aspirational Presentation image -->
+        <img src="https://picsum.photos/seed/miravalen-family-health-1/900/700" alt="[describe: Aspirational Presentation image]" loading="lazy" width="900" height="700" />
+      </figure>
+      </div>
+    </section>
+
+    <section class="section section--gallery" id="gallery">
+      <!-- Curated Gallery / Showcase: Let the strongest visuals sell. Asymmetric editorial layout. — gallery pattern: editorial-asym. Facility and team photos with generous rounding; used sparingly — this style is content-led. -->
+      <div data-reveal-group>
+        <p class="eyebrow" data-reveal>[Curated Gallery / Showcase label]</p>
+        <h2 data-reveal>[Curated Gallery / Showcase headline — specific to Miravalen Family Health]</h2>
+      </div>
+      <div class="grid-12 gallery-asym" data-reveal>
+        <figure class="media g-7"><!-- REEMPLAZAR: wide establishing shot — 3:2 -->
+        <img src="https://picsum.photos/seed/miravalen-family-health-2/900/600" alt="[describe: wide establishing shot — 3:2]" loading="lazy" width="900" height="600" />
+      </figure>
+        <figure class="media g-5 g-offset"><!-- REEMPLAZAR: vertical detail — 3:4, offset down -->
+        <img src="https://picsum.photos/seed/miravalen-family-health-3/600/800" alt="[describe: vertical detail — 3:4, offset down]" loading="lazy" width="600" height="800" />
+      </figure>
+        <figure class="media g-8"><!-- REEMPLAZAR: wide scene — panoramic -->
+        <img src="https://picsum.photos/seed/miravalen-family-health-4/1200/675" alt="[describe: wide scene — panoramic]" loading="lazy" width="1200" height="675" />
+      </figure>
+        <figure class="media g-4"><!-- REEMPLAZAR: intimate detail crop -->
+        <img src="https://picsum.photos/seed/miravalen-family-health-5/600/600" alt="[describe: intimate detail crop]" loading="lazy" width="600" height="600" />
+      </figure>
+      </div>
+    </section>
+
+    <section class="section section--offer" id="offer">
+      <!-- What We Offer / Event Types / Services: Concrete offerings, each treated as its own small story — never three equal cards.
+         Copy guidance: Each offering gets a specific name, one vivid sentence, and a real detail that proves expertise.
+         Layout: index-list -->
+      <div data-reveal-group>
+        <p class="eyebrow" data-reveal>[What We Offer / Event Types / Services label]</p>
+        <h2 data-reveal>[What We Offer / Event Types / Services headline — specific to Miravalen Family Health]</h2>
+        <ol class="index-list">
+          <li class="index-row" data-reveal>
+          <span class="index-num">01</span>
+          <h3 class="index-title">[Item name]</h3>
+          <p class="index-desc">[One vivid, specific line — real detail that proves expertise]</p>
+          <span class="index-meta">[meta]</span>
+        </li>
+          <li class="index-row" data-reveal>
+          <span class="index-num">02</span>
+          <h3 class="index-title">[Item name]</h3>
+          <p class="index-desc">[One vivid, specific line — real detail that proves expertise]</p>
+          <span class="index-meta">[meta]</span>
+        </li>
+          <li class="index-row" data-reveal>
+          <span class="index-num">03</span>
+          <h3 class="index-title">[Item name]</h3>
+          <p class="index-desc">[One vivid, specific line — real detail that proves expertise]</p>
+          <span class="index-meta">[meta]</span>
+        </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section section--differentiators" id="differentiators">
+      <!-- Differentiators: Why here and not anywhere else. Specifics beat adjectives.
+         Copy guidance: Numbers, names, materials, capacities, awards. 'Ceilings of 8 meters' beats 'spacious'.
+         Layout: offset-narrow -->
+      <div class="grid-12 layout-offset">
+        <span class="section-numeral" aria-hidden="true">03</span>
+        <div class="g-offset-content" data-reveal-group>
+          <p class="eyebrow" data-reveal>[Differentiators label]</p>
+        <h2 data-reveal>[Differentiators headline — specific to Miravalen Family Health]</h2>
+          <div class="section-body" data-reveal>[Content per guidance above]</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--experience" id="experience">
+      <!-- Experience & Atmosphere: Sensory storytelling section, often sticky/scroll-driven.
+         Copy guidance: Present tense, second person. Walk the reader through the moment.
+         Layout: split-5-7 -->
+      <div class="grid-12 layout-split">
+        <div class="g-text" data-reveal-group>
+        <p class="eyebrow" data-reveal>[Experience & Atmosphere label]</p>
+        <h2 data-reveal>[Experience & Atmosphere headline — specific to Miravalen Family Health]</h2>
+        <div class="section-body" data-reveal>[Content per guidance above]</div>
+      </div>
+        <figure class="media g-media"><!-- REEMPLAZAR: Experience & Atmosphere image -->
+        <img src="https://picsum.photos/seed/miravalen-family-health-6/900/700" alt="[describe: Experience & Atmosphere image]" loading="lazy" width="900" height="700" />
+      </figure>
+      </div>
+    </section>
+
+    <section class="section section--proof" id="proof">
+      <!-- Social Proof: Substantiated reputation only — real quotes, real names/events, real ratings.
+         Copy guidance: Short verbatim quotes. Never invent testimonials; omit the section if unproven.
+         Layout: index-list -->
+      <div data-reveal-group>
+        <p class="eyebrow" data-reveal>[Social Proof label]</p>
+        <h2 data-reveal>[Social Proof headline — specific to Miravalen Family Health]</h2>
+        <ol class="index-list">
+          <li class="index-row" data-reveal>
+          <span class="index-num">01</span>
+          <h3 class="index-title">[Item name]</h3>
+          <p class="index-desc">[One vivid, specific line — real detail that proves expertise]</p>
+          <span class="index-meta">[meta]</span>
+        </li>
+          <li class="index-row" data-reveal>
+          <span class="index-num">02</span>
+          <h3 class="index-title">[Item name]</h3>
+          <p class="index-desc">[One vivid, specific line — real detail that proves expertise]</p>
+          <span class="index-meta">[meta]</span>
+        </li>
+          <li class="index-row" data-reveal>
+          <span class="index-num">03</span>
+          <h3 class="index-title">[Item name]</h3>
+          <p class="index-desc">[One vivid, specific line — real detail that proves expertise]</p>
+          <span class="index-meta">[meta]</span>
+        </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section section--faq" id="faq">
+      <!-- FAQs: Remove friction from the decision. Answer the real objections. -->
+      <div data-reveal-group>
+        <p class="eyebrow" data-reveal>[FAQs label]</p>
+        <h2 data-reveal>[FAQs headline — specific to Miravalen Family Health]</h2>
+        <div class="faq-list">
+          <details class="faq-item" data-reveal>
+          <summary>[Question 1 — in the customer's words]</summary>
+          <p>[Confident, specific answer. 2–4 sentences.]</p>
+        </details>
+          <details class="faq-item" data-reveal>
+          <summary>[Question 2 — in the customer's words]</summary>
+          <p>[Confident, specific answer. 2–4 sentences.]</p>
+        </details>
+          <details class="faq-item" data-reveal>
+          <summary>[Question 3 — in the customer's words]</summary>
+          <p>[Confident, specific answer. 2–4 sentences.]</p>
+        </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--cta" id="cta">
+      <!-- Main CTA / Booking: The one action. Full emotional weight of the page lands here. — Copy: Invitation, not pressure. Restate the aspiration in one line, then the action. -->
+      <div class="cta-band" data-reveal-group>
+        <h2 data-reveal>[Main CTA / Booking — restate the aspiration in one line]</h2>
+        <p data-reveal>[Supporting line: response time, direct channels]</p>
+        <a class="cta" href="#" data-reveal>[The one action]</a>
+      </div>
+    </section>
+  </main>
+
+    <!-- Footer (columns): Locations with hours per column; emergency/after-hours line clearly visible. -->
+    <footer class="site-footer footer--columns">
+      <div class="footer-grid">
+        <div><p class="footer-brand">Miravalen Family Health</p><p>[one-line brand statement]</p></div>
+        <nav aria-label="Footer">[site links]</nav>
+        <div>[address · phone · hours — full NAP if local]</div>
+        <div>[social links]</div>
+      </div>
+      <p class="footer-legal">© 2026 Miravalen Family Health. [legal links]</p>
+    </footer>
+    <!-- Mobile sticky action bar: the thumb-zone conversion surface. Wire real numbers. -->
+    <div class="mobile-cta-bar">
+      <a class="mcb-btn" href="tel:+10000000000"><!-- REEMPLAZAR: real phone -->[Call]</a>
+      <a class="mcb-btn mcb-btn--primary" href="https://wa.me/10000000000"><!-- REEMPLAZAR: real WhatsApp -->[WhatsApp]</a>
+    </div>
+
+  <script>(function(){var t=document.querySelector('.nav-toggle'),l=document.getElementById('nav-links');if(!t||!l)return;function close(){t.setAttribute('aria-expanded','false');document.body.classList.remove('nav-open');}t.addEventListener('click',function(){var o=t.getAttribute('aria-expanded')==='true';t.setAttribute('aria-expanded',String(!o));document.body.classList.toggle('nav-open',!o);});l.addEventListener('click',function(e){if(e.target.closest('a'))close();});document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});})();</script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script>
+    // Care Trust motion: Gentle and brief. Nothing between the patient and the appointment button.
+    // GSAP is 100% free incl. SplitText/ScrambleText/DrawSVG — load what the build needs.
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduced && window.gsap) {
+      gsap.registerPlugin(ScrollTrigger);
+      document.querySelectorAll('[data-reveal-group]').forEach((group) => {
+        const items = group.querySelectorAll('[data-reveal]');
+        if (!items.length) return;
+        gsap.fromTo(items,
+          { autoAlpha: 0, y: 28 },
+          { autoAlpha: 1, y: 0, duration: 1.0, ease: 'expo.out', /* tune to brand easing: cubic-bezier(0.33, 1, 0.68, 1) */ stagger: 0.12,
+            scrollTrigger: { trigger: group, start: 'top 78%' } }
+        );
+      });
+      document.querySelectorAll('[data-reveal]:not([data-reveal-group] [data-reveal])').forEach((el) => {
+        gsap.fromTo(el, { autoAlpha: 0, y: 28 }, { autoAlpha: 1, y: 0, duration: 1.0, ease: 'expo.out',
+          scrollTrigger: { trigger: el, start: 'top 82%' } });
+      });
+    } else {
+      document.querySelectorAll('[data-reveal]').forEach((el) => { el.style.opacity = 1; el.style.visibility = 'visible'; });
+    }
+  </script>
+</body>
+</html>

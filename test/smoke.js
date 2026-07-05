@@ -37,22 +37,22 @@ const biz = {
   accentColor: "#b98a4e"
 };
 
-await check("tools/list exposes all 13 tools", async () => {
+await check("tools/list exposes all 14 tools", async () => {
   const { tools } = await client.listTools();
   const names = tools.map((t) => t.name).sort();
   const expected = [
-    "compose_build_prompt", "create_design_system", "generate_variations",
+    "bootstrap_website", "compose_build_prompt", "create_design_system", "generate_variations",
     "get_design_style", "get_design_trends", "get_page_blueprint",
     "list_design_styles", "list_page_blueprints", "plan_site",
-    "quality_standards", "recommend_stack", "recommend_style", "scaffold_page"
+    "quality_standards", "recommend_stack", "recommend_style", "scaffold_page", "scaffold_site"
   ];
   for (const e of expected) if (!names.includes(e)) throw new Error(`missing tool ${e}`);
 });
 
-await check("list_design_styles returns 13 styles", async () => {
+await check("list_design_styles returns 18 styles", async () => {
   const styles = parse(await client.callTool({ name: "list_design_styles", arguments: {} }));
-  if (styles.length !== 13) throw new Error(`got ${styles.length}`);
-  for (const id of ["craftsman-trust", "care-trust", "ivory-elegance"]) {
+  if (styles.length !== 18) throw new Error(`got ${styles.length}`);
+  for (const id of ["craftsman-trust", "care-trust", "ivory-elegance", "appetite-bold", "estate-serif", "iron-grit", "counsel-classic", "showroom-drive"]) {
     if (!styles.some((s) => s.id === id)) throw new Error(`missing style ${id}`);
   }
 });
@@ -80,10 +80,10 @@ await check("get_design_style rejects bad id gracefully", async () => {
   if (!s.error || !s.available) throw new Error("expected error payload with available ids");
 });
 
-await check("list_page_blueprints returns 16 blueprints", async () => {
+await check("list_page_blueprints returns 18 blueprints", async () => {
   const b = parse(await client.callTool({ name: "list_page_blueprints", arguments: {} }));
-  if (b.length !== 16) throw new Error(`got ${b.length}`);
-  for (const id of ["team", "locations", "careers", "landing-local-service"]) {
+  if (b.length !== 18) throw new Error(`got ${b.length}`);
+  for (const id of ["team", "locations", "careers", "landing-local-service", "menu", "landing-campaign"]) {
     if (!b.some((x) => x.id === id)) throw new Error(`missing blueprint ${id}`);
   }
 });
@@ -176,6 +176,37 @@ await check("recommend_style matches healthcare and trades industries", async ()
   if (glass.recommendations[0]?.id !== "craftsman-trust") throw new Error(`glass got ${glass.recommendations[0]?.id}`);
 });
 
+await check("recommend_style matches the 5 new business verticals", async () => {
+  const cases = [
+    ["food truck", "appetite-bold"],
+    ["law firm", "counsel-classic"],
+    ["gym", "iron-grit"],
+    ["property management", "estate-serif"],
+    ["car dealership", "showroom-drive"]
+  ];
+  for (const [industry, want] of cases) {
+    const r = parse(await client.callTool({ name: "recommend_style", arguments: { industry } }));
+    if (r.recommendations[0]?.id !== want) throw new Error(`${industry} got ${r.recommendations[0]?.id}, want ${want}`);
+  }
+});
+
+await check("bootstrap_website: one call, deterministic, full plan", async () => {
+  const args = { business: { name: "Vitrelora Glass Co.", industry: "glass company", language: "bilingual en/es" } };
+  const a = parse(await client.callTool({ name: "bootstrap_website", arguments: args }));
+  const b = parse(await client.callTool({ name: "bootstrap_website", arguments: args }));
+  if (a.style.chosen !== "craftsman-trust") throw new Error(`chose ${a.style.chosen}`);
+  if (a.variation.seed !== b.variation.seed) throw new Error("seed not deterministic");
+  if (a.variation.seedSource !== "derived from business name (deterministic)") throw new Error("wrong seed source");
+  if (a.sitePlan.pages.length !== 5) throw new Error(`default sitemap has ${a.sitePlan.pages.length} pages`);
+  if (!a.sitePlan.pages[0].buildPrompt.includes("Mobile Mandate")) throw new Error("briefs incomplete");
+  if (!a.workflow?.length) throw new Error("workflow missing");
+  const other = parse(await client.callTool({ name: "bootstrap_website", arguments: { business: { name: "Casa Vesperalta", industry: "event venue" } } }));
+  if (other.variation.seed === a.variation.seed) throw new Error("different businesses share a seed");
+  const menu = parse(await client.callTool({ name: "bootstrap_website", arguments: { business: { name: "Taquería Solmarela", industry: "food truck" }, pages: [{ pageType: "home" }, { pageType: "menu" }] } }));
+  if (menu.style.chosen !== "appetite-bold") throw new Error(`taquería chose ${menu.style.chosen}`);
+  if (!menu.sitePlan.pages[1].buildPrompt.includes("Menu Sections")) throw new Error("menu blueprint not in brief");
+});
+
 await check("generate_variations is deterministic and distinct", async () => {
   const a = parse(await client.callTool({ name: "generate_variations", arguments: { styleId: "editorial-luxury", count: 4 } }));
   const b = parse(await client.callTool({ name: "generate_variations", arguments: { styleId: "editorial-luxury", count: 4 } }));
@@ -235,10 +266,13 @@ await check("recommend_stack returns catalog and per-need recipes", async () => 
 
 await check("mobile: working menu, sticky action bar, 16px inputs, mandate in briefs", async () => {
   const lux = parse(await client.callTool({ name: "scaffold_page", arguments: { styleId: "editorial-luxury", pageType: "home", business: biz } }));
-  for (const needle of ['class="nav-toggle" aria-expanded="false" aria-controls="nav-links"', "body.nav-open .nav-links { display: flex; }", "nav-toggle", "font-size: max(16px, 1em)"]) {
+  for (const needle of ['class="nav-toggle" aria-expanded="false" aria-controls="nav-links"', "body.nav-open .nav-links { display: flex; }", "nav-toggle", "font-size: max(16px, 1em)",
+    "close:'Close'", "position: fixed; top: .75rem; right: var(--gutter); z-index: 35"]) {
     if (!lux.html.includes(needle)) throw new Error(`scaffold missing '${needle}'`);
   }
   if (lux.html.includes("TODO(build): mobile menu")) throw new Error("dead-end mobile nav still present");
+  const es = parse(await client.callTool({ name: "scaffold_page", arguments: { styleId: "ivory-elegance", pageType: "home", business: { name: "Terraza Alborela", language: "es" } } }));
+  if (!es.html.includes(">Menú</button>") || !es.html.includes("close:'Cerrar'")) throw new Error("menu labels not localized for es");
   if (lux.html.includes("mobile-cta-bar\">")) throw new Error("editorial home should not carry the mobile bar");
   const glass = parse(await client.callTool({ name: "scaffold_page", arguments: { styleId: "craftsman-trust", pageType: "landing-local-service", business: { name: "Vitrelora Glass Co." } } }));
   for (const needle of ["mobile-cta-bar", "wa.me", "tel:", "has-mobile-bar", "safe-area-inset-bottom"]) {
@@ -248,6 +282,44 @@ await check("mobile: working menu, sticky action bar, 16px inputs, mandate in br
   if (!res.content[0].text.includes("Mobile Mandate")) throw new Error("brief missing Mobile Mandate");
   const q = parse(await client.callTool({ name: "quality_standards", arguments: { section: "mobile" } }));
   if (!q.mobileRules?.length) throw new Error("quality_standards mobile section missing");
+});
+
+await check("scaffold_site emits linked multi-page site with interior heroes", async () => {
+  const site = parse(await client.callTool({
+    name: "scaffold_site",
+    arguments: {
+      styleId: "showroom-drive",
+      business: { name: "Alborvane Motorworks", industry: "auto detailing" },
+      pages: [{ pageType: "home" }, { pageType: "services" }, { pageType: "gallery" }, { pageType: "contact" }]
+    }
+  }));
+  if (site.files.length !== 4) throw new Error(`got ${site.files.length} files`);
+  const home = site.files[0], services = site.files[1];
+  if (home.file !== "index.html") throw new Error("home not index.html");
+  for (const needle of ['href="services.html"', 'href="gallery.html"', 'href="contact.html"']) {
+    if (!home.html.includes(needle)) throw new Error(`home nav missing ${needle}`);
+  }
+  if (!home.html.includes('href="index.html" aria-current="page"')) throw new Error("home missing aria-current");
+  if (!services.html.includes('href="services.html" aria-current="page"')) throw new Error("services missing aria-current");
+  if (home.html.includes('class="hero hero--interior')) throw new Error("home should NOT be interior");
+  if (!services.html.includes('class="hero hero--interior')) throw new Error("interior page missing reduced hero");
+  const homeTokens = home.html.match(/:root \{[\s\S]*?\}/)[0];
+  const svcTokens = services.html.match(/:root \{[\s\S]*?\}/)[0];
+  if (homeTokens !== svcTokens) throw new Error("token drift between pages");
+});
+
+await check("scrub-sequence flourish scaffolds the AirPods mechanic", async () => {
+  let hit = null;
+  for (let seed = 1; seed <= 30 && !hit; seed++) {
+    const v = parse(await client.callTool({ name: "scaffold_page", arguments: { styleId: "showroom-drive", pageType: "home", business: { name: "Alborvane Motorworks" }, variationSeed: seed } }));
+    if (v.composition.flourishes.some((f) => f.startsWith("scrub-sequence"))) hit = v;
+  }
+  if (!hit) throw new Error("no seed produced scrub-sequence in 30 tries");
+  for (const needle of ["pin-seq-track", "seq-canvas", "position: sticky", "ffmpeg -i product.mp4", "prefers-reduced-motion"]) {
+    if (!hit.html.includes(needle)) throw new Error(`sequence scaffold missing '${needle}'`);
+  }
+  const stack = parse(await client.callTool({ name: "recommend_stack", arguments: { need: "scroll-sequence" } }));
+  if (!stack.recipe?.recipe.includes("300vh")) throw new Error("scroll-sequence recipe missing");
 });
 
 await check("prompts/list exposes premium-website", async () => {

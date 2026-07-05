@@ -185,6 +185,30 @@ export const BLUEPRINTS = {
       { id: "footer", name: "Footer", purpose: "Standard premium footer with full NAP (name, address, phone) for local SEO.", copy: "Consistent with site." }
     ]
   },
+  menu: {
+    name: "Menu (Restaurant/Bar)",
+    narrative: "The menu IS the marketing. Typography makes dishes desirable; ordering is never more than one tap away.",
+    sections: [
+      { id: "hero", name: "Compact Appetite Hero", purpose: "Signature dish or atmosphere shot with the menu immediately reachable — no long scroll to food.", copy: "Headline naming the house specialty or promise. Sub: hours open now / order channels." },
+      { id: "menu-groups", name: "Menu Sections", purpose: "Grouped dishes (starters, mains, drinks…) as typographic index lists — dish name prominent, one vivid description line, honest price aligned right.", copy: "Descriptions sell with specifics (cut, preparation, origin), never adjective soup. Mark bestsellers/spicy/veg with restrained typographic markers, not icon clutter." },
+      { id: "specials", name: "Specials / Signatures", purpose: "The 2–4 dishes that define the house, treated editorially with photography.", copy: "One short story line per dish — why it exists, what makes it theirs." },
+      { id: "order", name: "Order / Reserve CTA", purpose: "Every ordering channel in one place: WhatsApp, phone, delivery platforms, reservation link.", copy: "Direct: 'Order for pickup', 'Reserve a table'. State wait/prep expectations if known." },
+      { id: "practical", name: "Hours & Location", purpose: "Remove the two questions everyone has before coming.", copy: "Hours per day, address with map link, parking note." },
+      { id: "footer", name: "Footer", purpose: "Standard premium footer with full NAP.", copy: "Consistent with site." }
+    ]
+  },
+  "landing-campaign": {
+    name: "Campaign Landing (Single Offer)",
+    narrative: "One offer, one audience, one action. Built for promos, packages, and seasonal pushes — repeatable per campaign for batch generation.",
+    sections: [
+      { id: "hero", name: "Offer Hero", purpose: "The offer stated completely in one viewport: what, for whom, until when, and the action.", copy: "Headline = the offer's payoff, not the business name. Real deadline/limit if one exists — never invent scarcity." },
+      { id: "offer-details", name: "What's Included", purpose: "Exact contents of the package/promo, itemized with dignity — clarity sells premium offers.", copy: "Every inclusion concrete (hours, quantities, names). Price framing per the brand's positioning." },
+      { id: "proof", name: "Proof", purpose: "Photos or quotes from previous instances of this exact offer (past quinceañeras, past details, past cohorts).", copy: "Minimal captions tying proof to the offer. Omit if unverified." },
+      { id: "terms", name: "Terms & Fit", purpose: "Who it's for, dates, conditions — honest constraints build trust and filter fit.", copy: "Plain-language terms; mark unconfirmed details [TO CONFIRM]." },
+      { id: "capture", name: "Claim / Booking Capture", purpose: "Minimum-friction capture: short form + WhatsApp deep link with the offer pre-filled.", copy: "Action names the offer ('Reserve the [package name]'). Response-time promise." },
+      { id: "footer", name: "Minimal Footer", purpose: "Contact + legal only — campaign pages stay focused.", copy: "Tiny; link back to the main site." }
+    ]
+  },
   "coming-soon": {
     name: "Coming Soon / Teaser",
     narrative: "Scarcity and intrigue in a single viewport.",

@@ -476,6 +476,186 @@ export const STYLES = [
       "Direct booking actions (WhatsApp/reservation form) styled with restraint"
     ],
     avoid: ["dark backgrounds", "heavy shadows or bold borders", "saturated colors", "dense layouts", "corporate sans-serif coldness"]
+  },
+  {
+    id: "appetite-bold",
+    name: "Appetite Bold",
+    summary:
+      "Hunger-first design. Massive condensed dish names, chile-red heat, food photography shot close enough to smell. Menus as typography, ordering one tap away.",
+    bestFor: ["restaurants", "taquerías & food trucks", "cafés & bakeries", "cantinas & bars", "catering", "ghost kitchens"],
+    typography: {
+      display: { family: "Anton", weights: [400], fallback: "Impact, sans-serif" },
+      body: { family: "Hanken Grotesk", weights: [400, 500, 700], fallback: "system-ui, sans-serif" },
+      scale: { hero: "clamp(3rem, 9vw, 7.5rem)", h2: "clamp(2rem, 5vw, 4rem)", body: "1.0625rem", small: "0.875rem" },
+      details: "Heavy condensed display in uppercase for dish names and section heads. Prices set honestly in tabular figures, never hidden or tiny."
+    },
+    palette: {
+      background: "#fff8f0",
+      surface: "#ffffff",
+      text: "#221108",
+      textMuted: "#7a6a58",
+      accent: "#d62815",
+      line: "rgba(34, 17, 8, 0.14)",
+      notes: "Warm cream base so food photography carries the color; chile red reserved for CTAs, prices worth shouting, and one hot moment per viewport. Appetite lives in the photos, not in painted backgrounds."
+    },
+    motion: {
+      character: "Snappy and appetizing — quick like service, never sluggish.",
+      easing: "cubic-bezier(0.34, 1.2, 0.64, 1)",
+      duration: "0.4s–0.6s reveals, 0.2s hovers",
+      signature: ["dish images popping in with slight overshoot", "menu marquee strips (SPECIALS · TACOS · AL PASTOR)", "price counters ticking on reveal", "hover lifting dish photos with a warm shadow"]
+    },
+    imagery: "Extreme close-ups: steam, cheese pulls, char marks, hands assembling. Saturated warm grade, shallow depth. Never sterile stock food on white.",
+    signatureDetails: [
+      "Menu sections as typographic index lists — dish name huge, description one vivid line, price aligned right",
+      "Marquee strip of specials or signature dishes between sections",
+      "One-tap ordering: WhatsApp/phone/delivery links always in reach",
+      "Hours and location answered within the first two viewports"
+    ],
+    avoid: ["desaturated moody grades on food", "tiny menu PDFs", "hidden prices", "stocky overhead flat-lays that look like ads", "elegant whispering type — food shouts"]
+  },
+  {
+    id: "estate-serif",
+    name: "Estate Serif",
+    summary:
+      "Grounded property confidence. Warm off-white, deep forest green, composed serif headlines over golden-hour photography. Specs typeset like a fine brochure.",
+    bestFor: ["real estate agents", "property developments", "land sales", "vacation rentals", "property management", "architecture-led builders"],
+    typography: {
+      display: { family: "Lora", weights: [500, 600], fallback: "Georgia, serif" },
+      body: { family: "Public Sans", weights: [400, 500], fallback: "system-ui, sans-serif" },
+      scale: { hero: "clamp(2.5rem, 6vw, 4.75rem)", h2: "clamp(1.875rem, 3.5vw, 3rem)", body: "1.0625rem", small: "0.8125rem" },
+      details: "Composed serif display — assured, never flowery. Spec numbers (m², beds, price) in tabular figures at generous size; they ARE the copy."
+    },
+    palette: {
+      background: "#f8f7f4",
+      surface: "#ffffff",
+      text: "#22261f",
+      textMuted: "#6e7265",
+      accent: "#37503d",
+      line: "rgba(34, 38, 31, 0.13)",
+      notes: "Warm paper white with deep forest green — land, growth, permanence. Green for CTAs and key figures only; photography supplies warmth (golden hour, wood, stone)."
+    },
+    motion: {
+      character: "Composed and assured, like walking a property at ease.",
+      easing: "cubic-bezier(0.25, 1, 0.5, 1)",
+      duration: "0.7s–1s reveals, 0.3s hovers",
+      signature: ["slow ken-burns drift on property wides", "spec counters (m², acres, year) counting up on reveal", "listing cards lifting gently on hover", "map pins dropping in sequence"]
+    },
+    imagery: "Golden-hour exteriors, drone wides establishing the land, bright natural interiors. Consistent warm grade across every listing — mixed grades read as a cheap portal.",
+    signatureDetails: [
+      "Spec strips typeset finely: 3 bed · 2 bath · 240 m² · [price]",
+      "Featured listing treated editorially at full width; secondary listings differentiated smaller",
+      "Location/map blocks with real neighborhood context",
+      "Financing/process explainer that removes first-timer fear"
+    ],
+    avoid: ["portal-style cramped listing grids", "watermarked photos", "red urgency banners", "gradient overlays on property photos", "generic skyline stock"]
+  },
+  {
+    id: "iron-grit",
+    name: "Iron Grit",
+    summary:
+      "Charcoal, chalk, and one high-vis accent. Condensed type that hits like a plate slam, honest pricing, schedules you can read mid-workout.",
+    bestFor: ["gyms & crossfit boxes", "martial arts academies", "personal trainers", "barbershops", "tattoo studios", "boxing clubs"],
+    typography: {
+      display: { family: "Oswald", weights: [500, 700], fallback: "Arial Narrow, sans-serif" },
+      body: { family: "Barlow", weights: [400, 500, 600], fallback: "system-ui, sans-serif" },
+      scale: { hero: "clamp(3rem, 10vw, 8.5rem)", h2: "clamp(2rem, 5vw, 4rem)", body: "1rem", small: "0.8125rem" },
+      details: "Condensed uppercase display with tight tracking. Numbers oversized everywhere — class times, prices, PRs. Body copy short and direct."
+    },
+    palette: {
+      background: "#0c0c0d",
+      surface: "#151517",
+      text: "#f2f2f0",
+      textMuted: "#8f8f8a",
+      accent: "#f5d90a",
+      line: "rgba(242, 242, 240, 0.12)",
+      notes: "Near-black charcoal with high-vis yellow — gym tape and barbell plates. Accent marks action and numbers only. Grain and grit welcome; polish is suspicious here."
+    },
+    motion: {
+      character: "Aggressive and immediate. Elements stamp in; nothing floats.",
+      easing: "cubic-bezier(0.87, 0, 0.13, 1)",
+      duration: "0.3s–0.5s, hard stops",
+      signature: ["stat counters slamming to their values (members, classes/week, years)", "marquee strips (NO EXCUSES · [discipline] · EST. [year])", "schedule rows highlighting on hover", "image reveals with hard clip-path wipes"]
+    },
+    imagery: "High-contrast training shots mid-effort: chalk clouds, straining faces, worn equipment. Gritty grade — desaturated with the accent color popping. Real members, never fitness stock models.",
+    signatureDetails: [
+      "Schedule tables readable at arm's length — big time slots, clear days",
+      "Straight-talk pricing: monthly rate huge, no asterisk games",
+      "Coach/staff profiles with real credentials and fight/comp records",
+      "Free-trial or drop-in CTA persistent throughout"
+    ],
+    avoid: ["inspirational-quote overlays", "lens-flared stock athletes", "soft rounded friendliness", "hidden pricing", "cluttered supplement-store energy"]
+  },
+  {
+    id: "counsel-classic",
+    name: "Counsel Classic",
+    summary:
+      "Quiet authority. Navy ink on paper white, a single serif voice, credentials stated precisely. Design that feels like sound advice.",
+    bestFor: ["law firms", "accounting & tax", "insurance agencies", "notaries", "financial advisors", "business consultants"],
+    typography: {
+      display: { family: "Source Serif 4", weights: [500, 600], fallback: "Georgia, serif" },
+      body: { family: "Source Sans 3", weights: [400, 500, 600], fallback: "system-ui, sans-serif" },
+      scale: { hero: "clamp(2.25rem, 5vw, 4rem)", h2: "clamp(1.625rem, 3vw, 2.5rem)", body: "1.0625rem", small: "0.875rem" },
+      details: "Serif display at restrained sizes — authority through precision, not scale. Sentence case. Generous body leading for dense subject matter."
+    },
+    palette: {
+      background: "#fcfcfb",
+      surface: "#f4f4f1",
+      text: "#1c2530",
+      textMuted: "#5a6472",
+      accent: "#123a63",
+      line: "#dfe2e6",
+      notes: "Paper white and deep navy — the palette of contracts and letterhead. No second accent. Sharp corners (2px radius max); softness undermines the message."
+    },
+    motion: {
+      character: "Nearly still. Fast, precise, functional — like a well-run office.",
+      easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+      duration: "0.25s–0.45s, no theatrics",
+      signature: ["instant-feeling fades", "underline draw-ins on practice-area links", "subtle count-ups for years/cases (only if real)", "accordion expansions for process/FAQ"]
+    },
+    imagery: "Real attorneys and offices in dignified daylight, city context, subtle document/desk details. Formal but human — clients hire people. Never gavel-and-scales clichés.",
+    signatureDetails: [
+      "Practice areas as a numbered index list, each with one plain-language sentence",
+      "Attorney/partner profiles: photo, bar admissions, education, one human line",
+      "Results stated carefully with substantiation or omitted ([TO CONFIRM] discipline is legal-critical)",
+      "Consultation CTA with response-time promise; required disclaimers typeset cleanly in the footer"
+    ],
+    avoid: ["gavels, scales, marble columns", "aggressive win-rate claims", "stock handshakes", "dark power-suit drama", "urgency tactics — trust is the product"]
+  },
+  {
+    id: "showroom-drive",
+    name: "Showroom Drive",
+    summary:
+      "Dark showroom gloss with a headlight-orange accent. Condensed automotive type, spec strips like a dashboard, inventory that scrolls like a lot walk.",
+    bestFor: ["car dealerships", "auto detailing", "mechanics & performance shops", "motorcycle dealers", "car rental", "tire & wheel shops"],
+    typography: {
+      display: { family: "Saira Condensed", weights: [600, 700], fallback: "Arial Narrow, sans-serif" },
+      body: { family: "Saira", weights: [400, 500], fallback: "system-ui, sans-serif" },
+      scale: { hero: "clamp(2.75rem, 8vw, 6.5rem)", h2: "clamp(2rem, 4.5vw, 3.5rem)", body: "1rem", small: "0.8125rem" },
+      details: "Condensed display with slight forward lean allowed on labels. Specs and prices in tabular figures; model names uppercase."
+    },
+    palette: {
+      background: "#0e1116",
+      surface: "#171c23",
+      text: "#eef1f4",
+      textMuted: "#8a93a0",
+      accent: "#ff6a2b",
+      line: "rgba(238, 241, 244, 0.1)",
+      notes: "Graphite showroom dark; signal orange for CTAs, prices, and availability badges. Gloss comes from photography reflections, not CSS shine effects."
+    },
+    motion: {
+      character: "Torque-y: fast starts, smooth finishes. Horizontal energy.",
+      easing: "cubic-bezier(0.65, 0, 0.35, 1)",
+      duration: "0.4s–0.7s",
+      signature: ["inventory strips scrolling horizontally with snap", "spec counters (hp · km · year) ticking up", "before/after detailing comparison sliders", "vehicle cards sliding in from the side"]
+    },
+    imagery: "3/4-angle hero shots with clean reflections, detail macros (wheels, stitching, paint beads), honest garage action for service shops. One consistent dark grade — mixed lighting reads as a used-car aggregator.",
+    signatureDetails: [
+      "Spec strips per vehicle: year · km · transmission · price — scannable in one glance",
+      "Before/after sliders for detailing/bodywork proof",
+      "Financing/trade-in explainer removing purchase friction",
+      "WhatsApp/call CTA on every vehicle card, not just the header"
+    ],
+    avoid: ["red SALE starbursts", "watermarked inventory photos", "chrome/carbon texture backgrounds", "lens-flare gloss effects", "cluttered badge walls"]
   }
 ];
 

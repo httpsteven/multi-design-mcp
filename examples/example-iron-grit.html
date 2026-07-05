@@ -3,27 +3,27 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Miravalen Family Health — Home / Landing</title>
-  <meta name="description" content="Home / Landing page for Miravalen Family Health." />
+  <title>Forjaline Athletics — Home / Landing</title>
+  <meta name="description" content="Home / Landing page for Forjaline Athletics." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      /* Care Trust — generated design tokens */
-      --color-bg: #ffffff;
-      --color-surface: #f7fafa;
-      --color-text: #1a2e2d;
-      --color-text-muted: #4a6663;
-      --color-accent: #0f6b5c;
-      --color-line: #e0ecea;
-      --font-display: 'Merriweather', Georgia, serif;
-      --font-body: 'Inter', system-ui, sans-serif;
-      --size-hero: clamp(2.25rem, 5vw, 4rem);
-      --size-h2: clamp(1.625rem, 3vw, 2.5rem);
-      --size-body: 1.0625rem;
-      --size-small: 0.875rem;
-      --ease-brand: cubic-bezier(0.33, 1, 0.68, 1);
+      /* Iron Grit — generated design tokens */
+      --color-bg: #0c0c0d;
+      --color-surface: #151517;
+      --color-text: #f2f2f0;
+      --color-text-muted: #8f8f8a;
+      --color-accent: #f5d90a;
+      --color-line: rgba(242, 242, 240, 0.12);
+      --font-display: 'Oswald', Arial Narrow, sans-serif;
+      --font-body: 'Barlow', system-ui, sans-serif;
+      --size-hero: clamp(3rem, 10vw, 8.5rem);
+      --size-h2: clamp(2rem, 5vw, 4rem);
+      --size-body: 1rem;
+      --size-small: 0.8125rem;
+      --ease-brand: cubic-bezier(0.87, 0, 0.13, 1);
       --space-2xs: 0.25rem;
       --space-xs: 0.5rem;
       --space-sm: 1rem;
@@ -35,7 +35,7 @@
       --measure: 65ch;
     }
 
-    /* Base — Care Trust. Palette logic: White with pale-teal surfaces and a deep teal accent for actions and headings. Soft radii (6–24px) and soft shadows are correct here — this style rounds where others sharpen. Red only for genuine emergencies. */
+    /* Base — Iron Grit. Palette logic: Near-black charcoal with high-vis yellow — gym tape and barbell plates. Accent marks action and numbers only. Grain and grit welcome; polish is suspicious here. */
     *, *::before, *::after { box-sizing: border-box; margin: 0; }
     html { scroll-behavior: smooth; }
     body { background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); font-size: var(--size-body); line-height: 1.7; -webkit-font-smoothing: antialiased; }
@@ -97,17 +97,21 @@
     .nav--edge-caps { justify-content: space-between; text-transform: uppercase; letter-spacing: .2em; border-bottom: 1px solid var(--color-line); }
     .nav--edge-caps .nav-links { margin-left: 0; }
 
-    /* Hero (split-media) */
-    .hero--split-media { display: grid; grid-template-columns: 6fr 6fr; gap: var(--gutter); align-items: center; min-height: 88svh; padding: var(--space-xl) var(--gutter) var(--space-lg); }
-    .trust-markers { margin-top: var(--space-md); font-size: var(--size-small); color: var(--color-text-muted); }
+    /* Hero (immersive) */
+    .hero--immersive { position: relative; min-height: 100svh; display: flex; }
+    .hero--immersive .hero-media { position: absolute; inset: 0; margin: 0; }
+    .hero--immersive .hero-media img, .hero--framed-center .hero-media img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(12,12,13,0.94) 0%, rgba(12,12,13,0.45) 40%, rgba(12,12,13,0.15) 100%); pointer-events: none; }
+    .hero-content { position: relative; z-index: 1; padding: var(--space-lg) var(--gutter); align-self: flex-end; max-width: 44rem; }
+    .hero-content--bottom-center { margin-inline: auto; text-align: center; }
+    .scroll-cue { position: absolute; bottom: var(--space-sm); left: 50%; z-index: 1; color: var(--color-text-muted); }
 
-    /* Gallery (editorial-asym) */
-    .gallery-asym { row-gap: var(--space-lg); }
-    .g-7 { grid-column: span 7; } .g-5 { grid-column: span 5; } .g-8 { grid-column: 3 / span 8; } .g-4 { grid-column: span 4; }
-    .g-offset { margin-top: var(--space-xl); }
+    /* Gallery (masonry-columns) */
+    .masonry { columns: 2; column-gap: var(--space-md); }
+    .masonry .media { break-inside: avoid; margin: 0 0 var(--space-md); }
 
-    /* Image treatment — Care Trust */
-    .media { border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
+    /* Image treatment — Iron Grit */
+    .media img { filter: saturate(0.85) contrast(1.12); }
 
 
     /* Mobile sticky action bar (conversion contexts) */
@@ -176,19 +180,18 @@
 
     /* TODO(build): scaffold gives the structural skeleton — apply the style's
        signature details before shipping:
-       - Rounded cards with soft shadows — differentiated by content, never three identical
-       - Provider profiles with photo, credentials, languages spoken
-       - Transparent pricing/insurance/membership blocks
-       - Appointment CTA visible in every viewport (header + section-level)
-       - Hours, locations, and phone answered within one glance */
+       - Schedule tables readable at arm's length — big time slots, clear days
+       - Straight-talk pricing: monthly rate huge, no asterisk games
+       - Coach/staff profiles with real credentials and fight/comp records
+       - Free-trial or drop-in CTA persistent throughout */
   </style>
 </head>
-<body class="has-mobile-bar">
+<body>
   <a href="#main" style="position:absolute;left:-999px" onfocus="this.style.left='1rem'" onblur="this.style.left='-999px'">Skip to content</a>
 
-    <!-- Nav (solid-bar): Logo, services, providers, locations + teal 'Book Appointment' button and visible phone. Sticky on mobile. -->
+    <!-- Nav (solid-bar): Condensed caps links, high-vis 'Free Trial' block CTA. 2px bottom border. -->
     <nav class="nav nav--solid-bar" aria-label="Main">
-      <a class="nav-brand" href="#top">Miravalen Family Health</a>
+      <a class="nav-brand" href="#top">Forjaline Athletics</a>
       <div class="nav-links" id="nav-links">
         <a href="#presentation">[Aspirational Presentation]</a>
         <a href="#gallery">[Curated Gallery / Showcase]</a>
@@ -200,55 +203,70 @@
     </nav>
 
   <main id="main">
-    <!-- Hero (split-media): Left: headline, reassurance subline, dual CTA (book + call), trust markers (same-day · bilingual · insurance). Right: rounded-mask photo of real staff/facility. -->
-    <header class="hero hero--split-media" id="top">
-      <div class="hero-copy" data-reveal-group>
-        <p class="eyebrow" data-reveal>FAMILY HEALTH CLINIC</p>
-        <!-- Headline rules: under 10 words, competitor-swap-proof, written only for Miravalen Family Health -->
-        <h1 class="hero-title" data-reveal>[Headline for Miravalen Family Health]</h1>
+    <!-- Hero (immersive): Mid-effort training shot; condensed headline stamping in; stat strip (members · classes/week · est.) under the CTA. Marquee strip beneath the hero. -->
+    <header class="hero hero--immersive" id="top">
+      <figure class="media hero-media"><!-- REEMPLAZAR: hero — the single strongest image/video frame -->
+        <img src="https://picsum.photos/seed/forjaline-athletics-8/1600/1000" alt="[describe: hero — the single strongest image/video frame]" loading="lazy" width="1600" height="1000" />
+      </figure>
+      <div class="hero-scrim" aria-hidden="true"></div>
+      <div class="hero-content hero-content--bottom-left" data-reveal-group>
+        <p class="eyebrow" data-reveal>GYM</p>
+        <!-- Headline rules: under 10 words, competitor-swap-proof, written only for Forjaline Athletics -->
+        <h1 class="hero-title" data-reveal>[Headline for Forjaline Athletics]</h1>
         <p class="hero-sub" data-reveal>[One supporting line. Optional.]</p>
         <a class="cta" href="#cta" data-reveal>[Primary action]</a>
-        <p class="trust-markers" data-reveal>[trust marker] · [trust marker] · [trust marker]</p>
       </div>
-      <figure class="media"><!-- REEMPLAZAR: hero image — 4:5, treated per style -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-7/800/1000" alt="[describe: hero image — 4:5, treated per style]" loading="lazy" width="800" height="1000" />
-      </figure>
+      <span class="scroll-cue" aria-hidden="true">&darr;</span>
     </header>
 
     <section class="section section--presentation" id="presentation">
       <!-- Aspirational Presentation: Introduce who this is for and what it feels like — not a feature list.
          Copy guidance: 2–3 short paragraphs of editorial voice. Write to one reader, not a market segment.
-         Layout: split-5-7 -->
-      <div class="grid-12 layout-split">
-        <div class="g-text" data-reveal-group>
+         Layout: index-list -->
+      <div data-reveal-group>
         <p class="eyebrow" data-reveal>[Aspirational Presentation label]</p>
-        <h2 data-reveal>[Aspirational Presentation headline — specific to Miravalen Family Health]</h2>
-        <div class="section-body" data-reveal>[Content per guidance above]</div>
-      </div>
-        <figure class="media g-media"><!-- REEMPLAZAR: Aspirational Presentation image -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-1/900/700" alt="[describe: Aspirational Presentation image]" loading="lazy" width="900" height="700" />
-      </figure>
+        <h2 data-reveal>[Aspirational Presentation headline — specific to Forjaline Athletics]</h2>
+        <ol class="index-list">
+          <li class="index-row" data-reveal>
+          <span class="index-num">01</span>
+          <h3 class="index-title">[Item name]</h3>
+          <p class="index-desc">[One vivid, specific line — real detail that proves expertise]</p>
+          <span class="index-meta">[meta]</span>
+        </li>
+          <li class="index-row" data-reveal>
+          <span class="index-num">02</span>
+          <h3 class="index-title">[Item name]</h3>
+          <p class="index-desc">[One vivid, specific line — real detail that proves expertise]</p>
+          <span class="index-meta">[meta]</span>
+        </li>
+          <li class="index-row" data-reveal>
+          <span class="index-num">03</span>
+          <h3 class="index-title">[Item name]</h3>
+          <p class="index-desc">[One vivid, specific line — real detail that proves expertise]</p>
+          <span class="index-meta">[meta]</span>
+        </li>
+        </ol>
       </div>
     </section>
 
     <section class="section section--gallery" id="gallery">
-      <!-- Curated Gallery / Showcase: Let the strongest visuals sell. Asymmetric editorial layout. — gallery pattern: editorial-asym. Facility and team photos with generous rounding; used sparingly — this style is content-led. -->
+      <!-- Curated Gallery / Showcase: Let the strongest visuals sell. Asymmetric editorial layout. — gallery pattern: masonry-columns. Gritty training shots, hard edges, no radius. Accent-color pop in occasional frames. -->
       <div data-reveal-group>
         <p class="eyebrow" data-reveal>[Curated Gallery / Showcase label]</p>
-        <h2 data-reveal>[Curated Gallery / Showcase headline — specific to Miravalen Family Health]</h2>
+        <h2 data-reveal>[Curated Gallery / Showcase headline — specific to Forjaline Athletics]</h2>
       </div>
-      <div class="grid-12 gallery-asym" data-reveal>
-        <figure class="media g-7"><!-- REEMPLAZAR: wide establishing shot — 3:2 -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-2/900/600" alt="[describe: wide establishing shot — 3:2]" loading="lazy" width="900" height="600" />
+      <div class="masonry" data-reveal>
+        <figure class="media"><!-- REEMPLAZAR: collected image 01 -->
+        <img src="https://picsum.photos/seed/forjaline-athletics-1/800/1000" alt="[describe: collected image 01]" loading="lazy" width="800" height="1000" />
       </figure>
-        <figure class="media g-5 g-offset"><!-- REEMPLAZAR: vertical detail — 3:4, offset down -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-3/600/800" alt="[describe: vertical detail — 3:4, offset down]" loading="lazy" width="600" height="800" />
+        <figure class="media"><!-- REEMPLAZAR: collected image 02 -->
+        <img src="https://picsum.photos/seed/forjaline-athletics-2/800/600" alt="[describe: collected image 02]" loading="lazy" width="800" height="600" />
       </figure>
-        <figure class="media g-8"><!-- REEMPLAZAR: wide scene — panoramic -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-4/1200/675" alt="[describe: wide scene — panoramic]" loading="lazy" width="1200" height="675" />
+        <figure class="media"><!-- REEMPLAZAR: collected image 03 -->
+        <img src="https://picsum.photos/seed/forjaline-athletics-3/800/1100" alt="[describe: collected image 03]" loading="lazy" width="800" height="1100" />
       </figure>
-        <figure class="media g-4"><!-- REEMPLAZAR: intimate detail crop -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-5/600/600" alt="[describe: intimate detail crop]" loading="lazy" width="600" height="600" />
+        <figure class="media"><!-- REEMPLAZAR: collected image 04 -->
+        <img src="https://picsum.photos/seed/forjaline-athletics-4/800/700" alt="[describe: collected image 04]" loading="lazy" width="800" height="700" />
       </figure>
       </div>
     </section>
@@ -256,70 +274,39 @@
     <section class="section section--offer" id="offer">
       <!-- What We Offer / Event Types / Services: Concrete offerings, each treated as its own small story — never three equal cards.
          Copy guidance: Each offering gets a specific name, one vivid sentence, and a real detail that proves expertise.
-         Layout: index-list -->
-      <div data-reveal-group>
-        <p class="eyebrow" data-reveal>[What We Offer / Event Types / Services label]</p>
-        <h2 data-reveal>[What We Offer / Event Types / Services headline — specific to Miravalen Family Health]</h2>
-        <ol class="index-list">
-          <li class="index-row" data-reveal>
-          <span class="index-num">01</span>
-          <h3 class="index-title">[Item name]</h3>
-          <p class="index-desc">[One vivid, specific line — real detail that proves expertise]</p>
-          <span class="index-meta">[meta]</span>
-        </li>
-          <li class="index-row" data-reveal>
-          <span class="index-num">02</span>
-          <h3 class="index-title">[Item name]</h3>
-          <p class="index-desc">[One vivid, specific line — real detail that proves expertise]</p>
-          <span class="index-meta">[meta]</span>
-        </li>
-          <li class="index-row" data-reveal>
-          <span class="index-num">03</span>
-          <h3 class="index-title">[Item name]</h3>
-          <p class="index-desc">[One vivid, specific line — real detail that proves expertise]</p>
-          <span class="index-meta">[meta]</span>
-        </li>
-        </ol>
-      </div>
+         Layout: full-band -->
+      <figure class="band media"><!-- REEMPLAZAR: full-bleed band image -->
+        <img src="https://picsum.photos/seed/forjaline-athletics-5/1600/900" alt="" loading="lazy" width="1600" height="900" />
+        <figcaption class="band-caption" data-reveal-group>
+          <h2 data-reveal>[What We Offer / Event Types / Services headline]</h2>
+          <p data-reveal>[One line only.]</p>
+        </figcaption>
+      </figure>
     </section>
 
     <section class="section section--differentiators" id="differentiators">
       <!-- Differentiators: Why here and not anywhere else. Specifics beat adjectives.
          Copy guidance: Numbers, names, materials, capacities, awards. 'Ceilings of 8 meters' beats 'spacious'.
-         Layout: offset-narrow -->
-      <div class="grid-12 layout-offset">
-        <span class="section-numeral" aria-hidden="true">03</span>
-        <div class="g-offset-content" data-reveal-group>
-          <p class="eyebrow" data-reveal>[Differentiators label]</p>
-        <h2 data-reveal>[Differentiators headline — specific to Miravalen Family Health]</h2>
-          <div class="section-body" data-reveal>[Content per guidance above]</div>
-        </div>
+         Layout: split-7-5 -->
+      <div class="grid-12 layout-split layout-split--rev">
+        <figure class="media g-media"><!-- REEMPLAZAR: Differentiators image -->
+        <img src="https://picsum.photos/seed/forjaline-athletics-6/1000/750" alt="[describe: Differentiators image]" loading="lazy" width="1000" height="750" />
+      </figure>
+        <div class="g-text" data-reveal-group>
+        <p class="eyebrow" data-reveal>[Differentiators label]</p>
+        <h2 data-reveal>[Differentiators headline — specific to Forjaline Athletics]</h2>
+        <div class="section-body" data-reveal>[Content per guidance above]</div>
+      </div>
       </div>
     </section>
 
     <section class="section section--experience" id="experience">
       <!-- Experience & Atmosphere: Sensory storytelling section, often sticky/scroll-driven.
          Copy guidance: Present tense, second person. Walk the reader through the moment.
-         Layout: split-5-7 -->
-      <div class="grid-12 layout-split">
-        <div class="g-text" data-reveal-group>
-        <p class="eyebrow" data-reveal>[Experience & Atmosphere label]</p>
-        <h2 data-reveal>[Experience & Atmosphere headline — specific to Miravalen Family Health]</h2>
-        <div class="section-body" data-reveal>[Content per guidance above]</div>
-      </div>
-        <figure class="media g-media"><!-- REEMPLAZAR: Experience & Atmosphere image -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-6/900/700" alt="[describe: Experience & Atmosphere image]" loading="lazy" width="900" height="700" />
-      </figure>
-      </div>
-    </section>
-
-    <section class="section section--proof" id="proof">
-      <!-- Social Proof: Substantiated reputation only — real quotes, real names/events, real ratings.
-         Copy guidance: Short verbatim quotes. Never invent testimonials; omit the section if unproven.
          Layout: index-list -->
       <div data-reveal-group>
-        <p class="eyebrow" data-reveal>[Social Proof label]</p>
-        <h2 data-reveal>[Social Proof headline — specific to Miravalen Family Health]</h2>
+        <p class="eyebrow" data-reveal>[Experience & Atmosphere label]</p>
+        <h2 data-reveal>[Experience & Atmosphere headline — specific to Forjaline Athletics]</h2>
         <ol class="index-list">
           <li class="index-row" data-reveal>
           <span class="index-num">01</span>
@@ -343,11 +330,24 @@
       </div>
     </section>
 
+    <section class="section section--proof" id="proof">
+      <!-- Social Proof: Substantiated reputation only — real quotes, real names/events, real ratings.
+         Copy guidance: Short verbatim quotes. Never invent testimonials; omit the section if unproven.
+         Layout: full-band -->
+      <figure class="band media"><!-- REEMPLAZAR: full-bleed band image -->
+        <img src="https://picsum.photos/seed/forjaline-athletics-7/1600/900" alt="" loading="lazy" width="1600" height="900" />
+        <figcaption class="band-caption" data-reveal-group>
+          <h2 data-reveal>[Social Proof headline]</h2>
+          <p data-reveal>[One line only.]</p>
+        </figcaption>
+      </figure>
+    </section>
+
     <section class="section section--faq" id="faq">
       <!-- FAQs: Remove friction from the decision. Answer the real objections. -->
       <div data-reveal-group>
         <p class="eyebrow" data-reveal>[FAQs label]</p>
-        <h2 data-reveal>[FAQs headline — specific to Miravalen Family Health]</h2>
+        <h2 data-reveal>[FAQs headline — specific to Forjaline Athletics]</h2>
         <div class="faq-list">
           <details class="faq-item" data-reveal>
           <summary>[Question 1 — in the customer's words]</summary>
@@ -375,37 +375,41 @@
     </section>
   </main>
 
-    <!-- Footer (columns): Locations with hours per column; emergency/after-hours line clearly visible. -->
+    <!-- Footer (columns): Schedule summary, address + parking note, big 'First class free' line above the columns. -->
     <footer class="site-footer footer--columns">
       <div class="footer-grid">
-        <div><p class="footer-brand">Miravalen Family Health</p><p>[one-line brand statement]</p></div>
+        <div><p class="footer-brand">Forjaline Athletics</p><p>[one-line brand statement]</p></div>
         <nav aria-label="Footer">[site links]</nav>
         <div>[address · phone · hours — full NAP if local]</div>
         <div>[social links]</div>
       </div>
-      <p class="footer-legal">© 2026 Miravalen Family Health. [legal links]</p>
+      <p class="footer-legal">© 2026 Forjaline Athletics. [legal links]</p>
     </footer>
-    <!-- Mobile sticky action bar: the thumb-zone conversion surface. Wire real numbers. -->
-    <div class="mobile-cta-bar">
-      <a class="mcb-btn" href="tel:+10000000000"><!-- REEMPLAZAR: real phone -->[Call]</a>
-      <a class="mcb-btn mcb-btn--primary" href="https://wa.me/10000000000"><!-- REEMPLAZAR: real WhatsApp -->[WhatsApp]</a>
-    </div>
 
   <script>(function(){var t=document.querySelector('.nav-toggle'),l=document.getElementById('nav-links');if(!t||!l)return;var LBL={open:'Menu',close:'Close'};function set(o){t.setAttribute('aria-expanded',String(o));t.textContent=o?LBL.close:LBL.open;document.body.classList.toggle('nav-open',o);if(o){var f=l.querySelector('a');if(f)f.focus();}else{t.focus();}}t.addEventListener('click',function(){set(t.getAttribute('aria-expanded')!=='true');});l.addEventListener('click',function(e){if(e.target.closest('a'))set(false);});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&t.getAttribute('aria-expanded')==='true')set(false);});})();</script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
   <script>
-    // Care Trust motion: Gentle and brief. Nothing between the patient and the appointment button.
+    // Iron Grit motion: Aggressive and immediate. Elements stamp in; nothing floats.
     // GSAP is 100% free incl. SplitText/ScrambleText/DrawSVG — load what the build needs.
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!reduced && window.gsap) {
       gsap.registerPlugin(ScrollTrigger);
+      if (window.Lenis) {
+        // Lenis momentum scroll — the 'feels expensive' upgrade, wired into ScrollTrigger.
+        document.documentElement.style.scrollBehavior = 'auto';
+        const lenis = new Lenis();
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((t) => lenis.raf(t * 1000));
+        gsap.ticker.lagSmoothing(0);
+      }
       document.querySelectorAll('[data-reveal-group]').forEach((group) => {
         const items = group.querySelectorAll('[data-reveal]');
         if (!items.length) return;
         gsap.fromTo(items,
           { autoAlpha: 0, y: 28 },
-          { autoAlpha: 1, y: 0, duration: 1.0, ease: 'expo.out', /* tune to brand easing: cubic-bezier(0.33, 1, 0.68, 1) */ stagger: 0.12,
+          { autoAlpha: 1, y: 0, duration: 1.0, ease: 'expo.out', /* tune to brand easing: cubic-bezier(0.87, 0, 0.13, 1) */ stagger: 0.12,
             scrollTrigger: { trigger: group, start: 'top 78%' } }
         );
       });

@@ -216,6 +216,10 @@ export const RECIPES = {
     need: "Dozens of coherent pages (city landings, service pages) without hand-copying",
     recipe: "Astro: one layout component holding nav/footer/tokens, a content collection (JSON/MD) of page data, getStaticPaths() to emit every page. plan_site briefs map 1:1 to collection entries. Still pure static output for GitHub Pages."
   },
+  "scroll-sequence": {
+    need: "Apple-AirPods-style product rotation/assembly driven by scroll",
+    recipe: "Sticky section (parent 300vh, inner position:sticky 100svh) + <canvas> drawing pre-rendered frames indexed by scroll progress — no scroll hijacking, works with Lenis. Frames: ffmpeg -i product.mp4 -vf 'scale=1600:-2' -quality 80 frames/f_%04d.webp (60–120 frames, ≤4MB total), or turntable renders from Blender/Spline. Preload the first frame + nearest neighbors; draw with requestAnimationFrame throttling. prefers-reduced-motion: show one static frame. The scaffold ships this mechanic with a procedural placeholder so it demos before frames exist."
+  },
   "micro-interactions": {
     need: "Hover states, magnetic buttons, cursor effects",
     recipe: "gsap.quickTo() for cursor-following/magnetic elements (one tween, updated per mousemove — never new tweens per event). Desktop-only via matchMedia('(pointer: fine)')."

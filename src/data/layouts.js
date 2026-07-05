@@ -50,6 +50,11 @@ export const HERO_VARIANTS = {
     name: "Collage Hero",
     description:
       "Broken-grid personality: 2–3 overlapping images at slight rotations occupy the viewport asymmetrically; the headline block overlaps the image stack (z-raised), with a caption escaping into the margin. Every overlap is deliberate — a disciplined base grid violated with intent, not scattered elements."
+  },
+  "dolly-zoom": {
+    name: "Dolly Push-In Hero",
+    description:
+      "Scrolling moves you INTO the scene: a 220vh track with a sticky 100svh viewport; the hero image scales from 1 to ~2.3 driven by scroll progress while the headline block fades and rises, so the visitor walks into the photograph and lands in the first section. Set transform-origin at the image's focal point (a doorway, the product, the horizon) so the push-in has a destination. Sticky-based — native scroll speed untouched. Static image under prefers-reduced-motion. Choose an image with real depth (a corridor, a room opening, a road) — flat subjects kill the effect."
   }
 };
 
@@ -114,6 +119,11 @@ export const CONTENT_LAYOUTS = {
   "centered-formal": {
     name: "Centered Formal Column",
     description: "Single centered column ≤65ch with an ornament or rule divider above the heading. Symmetric, ceremonial pacing."
+  },
+  "pin-sequence": {
+    name: "Pinned Scroll-Scrub Sequence",
+    description:
+      "The Apple-AirPods mechanic: a section 300vh tall whose inner viewport is position:sticky; scroll progress through the section scrubs a canvas drawing pre-rendered product frames (rotation, assembly, transformation). 60–120 webp frames extracted from a product video or 3D render; overlaid copy advances with progress. Static poster frame under prefers-reduced-motion. Sticky-based, so scroll speed is never hijacked."
   }
 };
 
@@ -260,6 +270,51 @@ export const COMPOSITIONS = {
     imageAspects: ["4:3 (facility)", "1:1 (providers)"],
     treatmentCss: ".media { border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.07); }",
     footer: { variant: "columns", notes: "Locations with hours per column; emergency/after-hours line clearly visible." }
+  },
+  "appetite-bold": {
+    nav: { variant: "solid-bar", notes: "Wordmark + menu/hours/location links + red 'Order' CTA with phone visible. Sticky — hunger doesn't scroll back up." },
+    hero: { variant: "split-media", notes: "Left: dish-name-sized headline, one appetite line, Order + Menu CTAs, hours strip. Right: the signature dish close-up, warm-graded. Marquee of specials directly beneath." },
+    gallery: { variant: "masonry-columns", notes: "Food close-ups at natural crops, tight gaps — abundance without order. One human moment (hands, service) per group." },
+    contentRotation: ["index-list", "split-7-5", "full-band"],
+    imageAspects: ["4:5 (dishes)", "3:2 (space/people)"],
+    treatmentCss: ".media { border-radius: 10px; overflow: hidden; } .media img { filter: saturate(1.08); }",
+    footer: { variant: "columns", notes: "Hours per day prominent, address + map link, delivery platform links, full NAP." }
+  },
+  "estate-serif": {
+    nav: { variant: "solid-bar", notes: "Wordmark, listings/services/about links, phone visible, green 'Schedule a Visit' CTA." },
+    hero: { variant: "immersive", contentPosition: "bottom-left", scrim: "linear-gradient(to top, rgba(34,38,31,0.88) 0%, rgba(34,38,31,0.3) 45%, transparent 75%)", notes: "Golden-hour property wide; headline bottom-left; spec strip (beds · baths · m²) directly under the subline." },
+    gallery: { variant: "editorial-asym", notes: "Exterior wide beside interior vertical; drone shot full-width; detail crop (materials, light) small." },
+    contentRotation: ["split-7-5", "index-list", "offset-narrow"],
+    imageAspects: ["3:2 (exteriors/wides)", "4:5 (interiors)"],
+    treatmentCss: ".media { border-radius: 6px; overflow: hidden; } .media img { filter: saturate(0.98) sepia(0.03); }",
+    footer: { variant: "columns", notes: "Office NAP, license numbers typeset cleanly, service areas listed — local SEO surface." }
+  },
+  "iron-grit": {
+    nav: { variant: "solid-bar", notes: "Condensed caps links, high-vis 'Free Trial' block CTA. 2px bottom border." },
+    hero: { variant: "immersive", contentPosition: "bottom-left", scrim: "linear-gradient(to top, rgba(12,12,13,0.94) 0%, rgba(12,12,13,0.45) 40%, rgba(12,12,13,0.15) 100%)", notes: "Mid-effort training shot; condensed headline stamping in; stat strip (members · classes/week · est.) under the CTA. Marquee strip beneath the hero." },
+    gallery: { variant: "masonry-columns", notes: "Gritty training shots, hard edges, no radius. Accent-color pop in occasional frames." },
+    contentRotation: ["index-list", "full-band", "split-7-5"],
+    imageAspects: ["3:2 (action)", "1:1 (portraits/PRs)"],
+    treatmentCss: ".media img { filter: saturate(0.85) contrast(1.12); }",
+    footer: { variant: "columns", notes: "Schedule summary, address + parking note, big 'First class free' line above the columns." }
+  },
+  "counsel-classic": {
+    nav: { variant: "solid-bar", notes: "Firm wordmark, practice areas / people / contact links, navy 'Consultation' CTA, phone visible." },
+    hero: { variant: "split-media", notes: "Left: plain-language headline about the client's problem (not the firm), one reassurance line, consultation CTA + response-time promise. Right: dignified portrait or office photo, sharp corners." },
+    gallery: { variant: "editorial-asym", notes: "Used sparingly — office, team at work, city context. This style is content-led; imagery supports, never decorates." },
+    contentRotation: ["index-list", "split-5-7", "offset-narrow"],
+    imageAspects: ["4:5 (portraits)", "3:2 (office/context)"],
+    treatmentCss: ".media { border-radius: 2px; overflow: hidden; }",
+    footer: { variant: "columns", notes: "Full contact + hours, bar/regulatory disclaimers typeset cleanly on the legal line — never hidden, never sloppy." }
+  },
+  "showroom-drive": {
+    nav: { variant: "solid-bar", notes: "Wordmark, inventory/services/financing links, orange 'View Inventory' CTA, phone + WhatsApp visible." },
+    hero: { variant: "immersive", contentPosition: "bottom-left", scrim: "linear-gradient(to top, rgba(14,17,22,0.94) 0%, rgba(14,17,22,0.4) 45%, transparent 80%)", notes: "3/4-angle hero vehicle with clean reflections; condensed headline; spec/price strip under the CTA. Availability badge top-right if real." },
+    gallery: { variant: "horizontal-scroll", notes: "Inventory as a lot walk: consistent-height vehicle cards with spec strips, scroll-snap, drag affordance." },
+    contentRotation: ["split-7-5", "index-list", "full-band"],
+    imageAspects: ["16:9 (vehicles)", "1:1 (detail macros)"],
+    treatmentCss: ".media { border-radius: 8px; overflow: hidden; border: 1px solid var(--color-line); }",
+    footer: { variant: "columns", notes: "Hours, address + directions, financing partners, full NAP; WhatsApp link repeated." }
   },
   "ivory-elegance": {
     nav: { variant: "transparent-overlay", notes: "Dark serif wordmark over the bright hero; hairline gold CTA border." },

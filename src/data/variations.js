@@ -105,6 +105,13 @@ export const FLOURISHES = {
     lib: "OGL (~30KB) for a single shader effect; full Three.js only for real 3D scenes, lazy-loaded with poster fallback.",
     scaffolded: false
   },
+  "scrub-sequence": {
+    name: "Scroll-Scrubbed Frame Sequence",
+    notes: "The AirPods move: a pinned viewport where scrolling rotates/assembles the product frame by frame. Scaffolded with a procedural placeholder (canvas draws a rotating wireframe product driven by scroll progress) so the mechanic works before real frames exist; swap in pre-rendered frames via data-frames. Reserve for ONE section — the product/experience story.",
+    cost: "medium",
+    lib: "Canvas + sticky section + ~40 lines vanilla (no GSAP dependency). Real frames: ffmpeg -i product.mp4 -vf 'scale=1600:-2' frames/f_%04d.webp (60–120 frames), then set data-frames/data-frame-count on the canvas. 3D renders: export turntable frames from Blender/Spline.",
+    scaffolded: true
+  },
   "oversized-footer": {
     name: "Oversized Footer Wordmark",
     notes: "Brand wordmark at 15–25vw spanning the footer's full width, cropped by the viewport bottom edge. Utility columns stay clean above it. Free personality, zero UX cost.",
@@ -131,12 +138,12 @@ export const VARIATION_SPACE = {
   "editorial-luxury": {
     heroes: ["immersive", "split-media", "collage"],
     galleries: ["editorial-asym", "horizontal-scroll", "stacked-cards"],
-    flourishes: ["split-text-mask", "preloader-wordmark", "grain-overlay", "parallax-layers", "oversized-footer", "image-trail", "custom-cursor", "sticky-scenes"]
+    flourishes: ["split-text-mask", "preloader-wordmark", "grain-overlay", "parallax-layers", "oversized-footer", "image-trail", "custom-cursor", "sticky-scenes", "scrub-sequence"]
   },
   "cinematic-noir": {
     heroes: ["immersive", "kinetic-type", "campaign"],
     galleries: ["horizontal-scroll", "stacked-cards", "single-stack"],
-    flourishes: ["sticky-scenes", "grain-overlay", "custom-cursor", "text-scramble", "preloader-wordmark", "scroll-progress", "three-accent", "split-text-mask"]
+    flourishes: ["sticky-scenes", "grain-overlay", "custom-cursor", "text-scramble", "preloader-wordmark", "scroll-progress", "three-accent", "split-text-mask", "scrub-sequence"]
   },
   "swiss-minimal": {
     heroes: ["typographic", "bento"],
@@ -161,7 +168,7 @@ export const VARIATION_SPACE = {
   "tech-precision": {
     heroes: ["split-media", "bento", "typographic"],
     galleries: ["bento-grid", "editorial-asym"],
-    flourishes: ["scroll-progress", "magnetic-buttons", "text-scramble", "view-transition-wipe", "three-accent", "variable-font-hover"]
+    flourishes: ["scroll-progress", "magnetic-buttons", "text-scramble", "view-transition-wipe", "three-accent", "variable-font-hover", "scrub-sequence"]
   },
   "gallery-white": {
     heroes: ["typographic", "immersive"],
@@ -176,7 +183,7 @@ export const VARIATION_SPACE = {
   "monochrome-fashion": {
     heroes: ["campaign", "kinetic-type", "immersive"],
     galleries: ["horizontal-scroll", "single-stack"],
-    flourishes: ["custom-cursor", "image-trail", "split-text-mask", "view-transition-wipe", "oversized-footer", "preloader-wordmark"]
+    flourishes: ["custom-cursor", "image-trail", "split-text-mask", "view-transition-wipe", "oversized-footer", "preloader-wordmark", "scrub-sequence"]
   },
   "craftsman-trust": {
     heroes: ["split-form", "split-media"],
@@ -192,6 +199,31 @@ export const VARIATION_SPACE = {
     heroes: ["immersive", "split-media", "collage"],
     galleries: ["editorial-asym", "stacked-cards"],
     flourishes: ["preloader-wordmark", "split-text-mask", "parallax-layers", "grain-overlay", "oversized-footer"]
+  },
+  "appetite-bold": {
+    heroes: ["split-media", "immersive", "collage"],
+    galleries: ["masonry-columns", "editorial-asym", "horizontal-scroll"],
+    flourishes: ["marquee-ticker", "grain-overlay", "image-trail", "magnetic-buttons", "oversized-footer", "scroll-progress"]
+  },
+  "estate-serif": {
+    heroes: ["immersive", "split-media", "bento"],
+    galleries: ["editorial-asym", "bento-grid", "stacked-cards"],
+    flourishes: ["parallax-layers", "scroll-progress", "split-text-mask", "view-transition-wipe", "oversized-footer", "magnetic-buttons"]
+  },
+  "iron-grit": {
+    heroes: ["immersive", "typographic", "kinetic-type"],
+    galleries: ["masonry-columns", "horizontal-scroll", "bento-grid"],
+    flourishes: ["marquee-ticker", "grain-overlay", "text-scramble", "scroll-progress", "magnetic-buttons", "oversized-footer", "scrub-sequence"]
+  },
+  "counsel-classic": {
+    heroes: ["split-media", "typographic", "immersive"],
+    galleries: ["editorial-asym", "bento-grid"],
+    flourishes: ["scroll-progress", "view-transition-wipe", "variable-font-hover"]
+  },
+  "showroom-drive": {
+    heroes: ["immersive", "campaign", "split-media"],
+    galleries: ["horizontal-scroll", "bento-grid", "editorial-asym"],
+    flourishes: ["scroll-progress", "custom-cursor", "marquee-ticker", "magnetic-buttons", "grain-overlay", "three-accent", "scrub-sequence"]
   }
 };
 

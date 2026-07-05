@@ -1,29 +1,29 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Miravalen Family Health — Home / Landing</title>
-  <meta name="description" content="Home / Landing page for Miravalen Family Health." />
+  <title>Taquería Solmarela — Menu (Restaurant/Bar)</title>
+  <meta name="description" content="Menu (Restaurant/Bar) page for Taquería Solmarela." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Anton:wght@400&family=Hanken+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      /* Care Trust — generated design tokens */
-      --color-bg: #ffffff;
-      --color-surface: #f7fafa;
-      --color-text: #1a2e2d;
-      --color-text-muted: #4a6663;
-      --color-accent: #0f6b5c;
-      --color-line: #e0ecea;
-      --font-display: 'Merriweather', Georgia, serif;
-      --font-body: 'Inter', system-ui, sans-serif;
-      --size-hero: clamp(2.25rem, 5vw, 4rem);
-      --size-h2: clamp(1.625rem, 3vw, 2.5rem);
+      /* Appetite Bold — generated design tokens */
+      --color-bg: #fff8f0;
+      --color-surface: #ffffff;
+      --color-text: #221108;
+      --color-text-muted: #7a6a58;
+      --color-accent: #d62815;
+      --color-line: rgba(34, 17, 8, 0.14);
+      --font-display: 'Anton', Impact, sans-serif;
+      --font-body: 'Hanken Grotesk', system-ui, sans-serif;
+      --size-hero: clamp(3rem, 9vw, 7.5rem);
+      --size-h2: clamp(2rem, 5vw, 4rem);
       --size-body: 1.0625rem;
       --size-small: 0.875rem;
-      --ease-brand: cubic-bezier(0.33, 1, 0.68, 1);
+      --ease-brand: cubic-bezier(0.34, 1.2, 0.64, 1);
       --space-2xs: 0.25rem;
       --space-xs: 0.5rem;
       --space-sm: 1rem;
@@ -35,7 +35,7 @@
       --measure: 65ch;
     }
 
-    /* Base — Care Trust. Palette logic: White with pale-teal surfaces and a deep teal accent for actions and headings. Soft radii (6–24px) and soft shadows are correct here — this style rounds where others sharpen. Red only for genuine emergencies. */
+    /* Base — Appetite Bold. Palette logic: Warm cream base so food photography carries the color; chile red reserved for CTAs, prices worth shouting, and one hot moment per viewport. Appetite lives in the photos, not in painted backgrounds. */
     *, *::before, *::after { box-sizing: border-box; margin: 0; }
     html { scroll-behavior: smooth; }
     body { background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); font-size: var(--size-body); line-height: 1.7; -webkit-font-smoothing: antialiased; }
@@ -101,13 +101,12 @@
     .hero--split-media { display: grid; grid-template-columns: 6fr 6fr; gap: var(--gutter); align-items: center; min-height: 88svh; padding: var(--space-xl) var(--gutter) var(--space-lg); }
     .trust-markers { margin-top: var(--space-md); font-size: var(--size-small); color: var(--color-text-muted); }
 
-    /* Gallery (editorial-asym) */
-    .gallery-asym { row-gap: var(--space-lg); }
-    .g-7 { grid-column: span 7; } .g-5 { grid-column: span 5; } .g-8 { grid-column: 3 / span 8; } .g-4 { grid-column: span 4; }
-    .g-offset { margin-top: var(--space-xl); }
+    /* Gallery (masonry-columns) */
+    .masonry { columns: 2; column-gap: var(--space-md); }
+    .masonry .media { break-inside: avoid; margin: 0 0 var(--space-md); }
 
-    /* Image treatment — Care Trust */
-    .media { border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
+    /* Image treatment — Appetite Bold */
+    .media { border-radius: 10px; overflow: hidden; } .media img { filter: saturate(1.08); }
 
 
     /* Mobile sticky action bar (conversion contexts) */
@@ -176,90 +175,51 @@
 
     /* TODO(build): scaffold gives the structural skeleton — apply the style's
        signature details before shipping:
-       - Rounded cards with soft shadows — differentiated by content, never three identical
-       - Provider profiles with photo, credentials, languages spoken
-       - Transparent pricing/insurance/membership blocks
-       - Appointment CTA visible in every viewport (header + section-level)
-       - Hours, locations, and phone answered within one glance */
+       - Menu sections as typographic index lists — dish name huge, description one vivid line, price aligned right
+       - Marquee strip of specials or signature dishes between sections
+       - One-tap ordering: WhatsApp/phone/delivery links always in reach
+       - Hours and location answered within the first two viewports */
   </style>
 </head>
-<body class="has-mobile-bar">
+<body>
   <a href="#main" style="position:absolute;left:-999px" onfocus="this.style.left='1rem'" onblur="this.style.left='-999px'">Skip to content</a>
 
-    <!-- Nav (solid-bar): Logo, services, providers, locations + teal 'Book Appointment' button and visible phone. Sticky on mobile. -->
+    <!-- Nav (solid-bar): Wordmark + menu/hours/location links + red 'Order' CTA with phone visible. Sticky — hunger doesn't scroll back up. -->
     <nav class="nav nav--solid-bar" aria-label="Main">
-      <a class="nav-brand" href="#top">Miravalen Family Health</a>
+      <a class="nav-brand" href="#top">Taquería Solmarela</a>
       <div class="nav-links" id="nav-links">
-        <a href="#presentation">[Aspirational Presentation]</a>
-        <a href="#gallery">[Curated Gallery / Showcase]</a>
-        <a href="#offer">[What We Offer / Event Types / Services]</a>
-        <a href="#differentiators">[Differentiators]</a>
+        <a href="#menu-groups">[Menu Sections]</a>
+        <a href="#specials">[Specials / Signatures]</a>
+        <a href="#order">[Order / Reserve CTA]</a>
+        <a href="#practical">[Hours & Location]</a>
       </div>
       <a class="cta cta--nav" href="#cta">[Nav CTA]</a>
-      <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links">Menu</button>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links">Menú</button>
     </nav>
 
   <main id="main">
-    <!-- Hero (split-media): Left: headline, reassurance subline, dual CTA (book + call), trust markers (same-day · bilingual · insurance). Right: rounded-mask photo of real staff/facility. -->
+    <!-- Hero (split-media): Left: dish-name-sized headline, one appetite line, Order + Menu CTAs, hours strip. Right: the signature dish close-up, warm-graded. Marquee of specials directly beneath. -->
     <header class="hero hero--split-media" id="top">
       <div class="hero-copy" data-reveal-group>
-        <p class="eyebrow" data-reveal>FAMILY HEALTH CLINIC</p>
-        <!-- Headline rules: under 10 words, competitor-swap-proof, written only for Miravalen Family Health -->
-        <h1 class="hero-title" data-reveal>[Headline for Miravalen Family Health]</h1>
+        <p class="eyebrow" data-reveal>TAQUERÍA</p>
+        <!-- Headline rules: under 10 words, competitor-swap-proof, written only for Taquería Solmarela -->
+        <h1 class="hero-title" data-reveal>[Headline for Taquería Solmarela]</h1>
         <p class="hero-sub" data-reveal>[One supporting line. Optional.]</p>
         <a class="cta" href="#cta" data-reveal>[Primary action]</a>
         <p class="trust-markers" data-reveal>[trust marker] · [trust marker] · [trust marker]</p>
       </div>
       <figure class="media"><!-- REEMPLAZAR: hero image — 4:5, treated per style -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-7/800/1000" alt="[describe: hero image — 4:5, treated per style]" loading="lazy" width="800" height="1000" />
+        <img src="https://picsum.photos/seed/taquer-a-solmarela-3/800/1000" alt="[describe: hero image — 4:5, treated per style]" loading="lazy" width="800" height="1000" />
       </figure>
     </header>
 
-    <section class="section section--presentation" id="presentation">
-      <!-- Aspirational Presentation: Introduce who this is for and what it feels like — not a feature list.
-         Copy guidance: 2–3 short paragraphs of editorial voice. Write to one reader, not a market segment.
-         Layout: split-5-7 -->
-      <div class="grid-12 layout-split">
-        <div class="g-text" data-reveal-group>
-        <p class="eyebrow" data-reveal>[Aspirational Presentation label]</p>
-        <h2 data-reveal>[Aspirational Presentation headline — specific to Miravalen Family Health]</h2>
-        <div class="section-body" data-reveal>[Content per guidance above]</div>
-      </div>
-        <figure class="media g-media"><!-- REEMPLAZAR: Aspirational Presentation image -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-1/900/700" alt="[describe: Aspirational Presentation image]" loading="lazy" width="900" height="700" />
-      </figure>
-      </div>
-    </section>
-
-    <section class="section section--gallery" id="gallery">
-      <!-- Curated Gallery / Showcase: Let the strongest visuals sell. Asymmetric editorial layout. — gallery pattern: editorial-asym. Facility and team photos with generous rounding; used sparingly — this style is content-led. -->
-      <div data-reveal-group>
-        <p class="eyebrow" data-reveal>[Curated Gallery / Showcase label]</p>
-        <h2 data-reveal>[Curated Gallery / Showcase headline — specific to Miravalen Family Health]</h2>
-      </div>
-      <div class="grid-12 gallery-asym" data-reveal>
-        <figure class="media g-7"><!-- REEMPLAZAR: wide establishing shot — 3:2 -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-2/900/600" alt="[describe: wide establishing shot — 3:2]" loading="lazy" width="900" height="600" />
-      </figure>
-        <figure class="media g-5 g-offset"><!-- REEMPLAZAR: vertical detail — 3:4, offset down -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-3/600/800" alt="[describe: vertical detail — 3:4, offset down]" loading="lazy" width="600" height="800" />
-      </figure>
-        <figure class="media g-8"><!-- REEMPLAZAR: wide scene — panoramic -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-4/1200/675" alt="[describe: wide scene — panoramic]" loading="lazy" width="1200" height="675" />
-      </figure>
-        <figure class="media g-4"><!-- REEMPLAZAR: intimate detail crop -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-5/600/600" alt="[describe: intimate detail crop]" loading="lazy" width="600" height="600" />
-      </figure>
-      </div>
-    </section>
-
-    <section class="section section--offer" id="offer">
-      <!-- What We Offer / Event Types / Services: Concrete offerings, each treated as its own small story — never three equal cards.
-         Copy guidance: Each offering gets a specific name, one vivid sentence, and a real detail that proves expertise.
+    <section class="section section--menu-groups" id="menu-groups">
+      <!-- Menu Sections: Grouped dishes (starters, mains, drinks…) as typographic index lists — dish name prominent, one vivid description line, honest price aligned right.
+         Copy guidance: Descriptions sell with specifics (cut, preparation, origin), never adjective soup. Mark bestsellers/spicy/veg with restrained typographic markers, not icon clutter.
          Layout: index-list -->
       <div data-reveal-group>
-        <p class="eyebrow" data-reveal>[What We Offer / Event Types / Services label]</p>
-        <h2 data-reveal>[What We Offer / Event Types / Services headline — specific to Miravalen Family Health]</h2>
+        <p class="eyebrow" data-reveal>[Menu Sections label]</p>
+        <h2 data-reveal>[Menu Sections headline — specific to Taquería Solmarela]</h2>
         <ol class="index-list">
           <li class="index-row" data-reveal>
           <span class="index-num">01</span>
@@ -283,119 +243,61 @@
       </div>
     </section>
 
-    <section class="section section--differentiators" id="differentiators">
-      <!-- Differentiators: Why here and not anywhere else. Specifics beat adjectives.
-         Copy guidance: Numbers, names, materials, capacities, awards. 'Ceilings of 8 meters' beats 'spacious'.
-         Layout: offset-narrow -->
-      <div class="grid-12 layout-offset">
-        <span class="section-numeral" aria-hidden="true">03</span>
-        <div class="g-offset-content" data-reveal-group>
-          <p class="eyebrow" data-reveal>[Differentiators label]</p>
-        <h2 data-reveal>[Differentiators headline — specific to Miravalen Family Health]</h2>
-          <div class="section-body" data-reveal>[Content per guidance above]</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--experience" id="experience">
-      <!-- Experience & Atmosphere: Sensory storytelling section, often sticky/scroll-driven.
-         Copy guidance: Present tense, second person. Walk the reader through the moment.
-         Layout: split-5-7 -->
-      <div class="grid-12 layout-split">
+    <section class="section section--specials" id="specials">
+      <!-- Specials / Signatures: The 2–4 dishes that define the house, treated editorially with photography.
+         Copy guidance: One short story line per dish — why it exists, what makes it theirs.
+         Layout: split-7-5 -->
+      <div class="grid-12 layout-split layout-split--rev">
+        <figure class="media g-media"><!-- REEMPLAZAR: Specials / Signatures image -->
+        <img src="https://picsum.photos/seed/taquer-a-solmarela-1/1000/750" alt="[describe: Specials / Signatures image]" loading="lazy" width="1000" height="750" />
+      </figure>
         <div class="g-text" data-reveal-group>
-        <p class="eyebrow" data-reveal>[Experience & Atmosphere label]</p>
-        <h2 data-reveal>[Experience & Atmosphere headline — specific to Miravalen Family Health]</h2>
+        <p class="eyebrow" data-reveal>[Specials / Signatures label]</p>
+        <h2 data-reveal>[Specials / Signatures headline — specific to Taquería Solmarela]</h2>
         <div class="section-body" data-reveal>[Content per guidance above]</div>
       </div>
-        <figure class="media g-media"><!-- REEMPLAZAR: Experience & Atmosphere image -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-6/900/700" alt="[describe: Experience & Atmosphere image]" loading="lazy" width="900" height="700" />
-      </figure>
       </div>
     </section>
 
-    <section class="section section--proof" id="proof">
-      <!-- Social Proof: Substantiated reputation only — real quotes, real names/events, real ratings.
-         Copy guidance: Short verbatim quotes. Never invent testimonials; omit the section if unproven.
-         Layout: index-list -->
-      <div data-reveal-group>
-        <p class="eyebrow" data-reveal>[Social Proof label]</p>
-        <h2 data-reveal>[Social Proof headline — specific to Miravalen Family Health]</h2>
-        <ol class="index-list">
-          <li class="index-row" data-reveal>
-          <span class="index-num">01</span>
-          <h3 class="index-title">[Item name]</h3>
-          <p class="index-desc">[One vivid, specific line — real detail that proves expertise]</p>
-          <span class="index-meta">[meta]</span>
-        </li>
-          <li class="index-row" data-reveal>
-          <span class="index-num">02</span>
-          <h3 class="index-title">[Item name]</h3>
-          <p class="index-desc">[One vivid, specific line — real detail that proves expertise]</p>
-          <span class="index-meta">[meta]</span>
-        </li>
-          <li class="index-row" data-reveal>
-          <span class="index-num">03</span>
-          <h3 class="index-title">[Item name]</h3>
-          <p class="index-desc">[One vivid, specific line — real detail that proves expertise]</p>
-          <span class="index-meta">[meta]</span>
-        </li>
-        </ol>
-      </div>
-    </section>
-
-    <section class="section section--faq" id="faq">
-      <!-- FAQs: Remove friction from the decision. Answer the real objections. -->
-      <div data-reveal-group>
-        <p class="eyebrow" data-reveal>[FAQs label]</p>
-        <h2 data-reveal>[FAQs headline — specific to Miravalen Family Health]</h2>
-        <div class="faq-list">
-          <details class="faq-item" data-reveal>
-          <summary>[Question 1 — in the customer's words]</summary>
-          <p>[Confident, specific answer. 2–4 sentences.]</p>
-        </details>
-          <details class="faq-item" data-reveal>
-          <summary>[Question 2 — in the customer's words]</summary>
-          <p>[Confident, specific answer. 2–4 sentences.]</p>
-        </details>
-          <details class="faq-item" data-reveal>
-          <summary>[Question 3 — in the customer's words]</summary>
-          <p>[Confident, specific answer. 2–4 sentences.]</p>
-        </details>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--cta" id="cta">
-      <!-- Main CTA / Booking: The one action. Full emotional weight of the page lands here. — Copy: Invitation, not pressure. Restate the aspiration in one line, then the action. -->
+    <section class="section section--order" id="order">
+      <!-- Order / Reserve CTA: Every ordering channel in one place: WhatsApp, phone, delivery platforms, reservation link. — Copy: Direct: 'Order for pickup', 'Reserve a table'. State wait/prep expectations if known. -->
       <div class="cta-band" data-reveal-group>
-        <h2 data-reveal>[Main CTA / Booking — restate the aspiration in one line]</h2>
+        <h2 data-reveal>[Order / Reserve CTA — restate the aspiration in one line]</h2>
         <p data-reveal>[Supporting line: response time, direct channels]</p>
         <a class="cta" href="#" data-reveal>[The one action]</a>
       </div>
     </section>
+
+    <section class="section section--practical" id="practical">
+      <!-- Hours & Location: Remove the two questions everyone has before coming.
+         Copy guidance: Hours per day, address with map link, parking note.
+         Layout: full-band -->
+      <figure class="band media"><!-- REEMPLAZAR: full-bleed band image -->
+        <img src="https://picsum.photos/seed/taquer-a-solmarela-2/1600/900" alt="" loading="lazy" width="1600" height="900" />
+        <figcaption class="band-caption" data-reveal-group>
+          <h2 data-reveal>[Hours & Location headline]</h2>
+          <p data-reveal>[One line only.]</p>
+        </figcaption>
+      </figure>
+    </section>
   </main>
 
-    <!-- Footer (columns): Locations with hours per column; emergency/after-hours line clearly visible. -->
+    <!-- Footer (columns): Hours per day prominent, address + map link, delivery platform links, full NAP. -->
     <footer class="site-footer footer--columns">
       <div class="footer-grid">
-        <div><p class="footer-brand">Miravalen Family Health</p><p>[one-line brand statement]</p></div>
+        <div><p class="footer-brand">Taquería Solmarela</p><p>[one-line brand statement]</p></div>
         <nav aria-label="Footer">[site links]</nav>
         <div>[address · phone · hours — full NAP if local]</div>
         <div>[social links]</div>
       </div>
-      <p class="footer-legal">© 2026 Miravalen Family Health. [legal links]</p>
+      <p class="footer-legal">© 2026 Taquería Solmarela. [legal links]</p>
     </footer>
-    <!-- Mobile sticky action bar: the thumb-zone conversion surface. Wire real numbers. -->
-    <div class="mobile-cta-bar">
-      <a class="mcb-btn" href="tel:+10000000000"><!-- REEMPLAZAR: real phone -->[Call]</a>
-      <a class="mcb-btn mcb-btn--primary" href="https://wa.me/10000000000"><!-- REEMPLAZAR: real WhatsApp -->[WhatsApp]</a>
-    </div>
 
-  <script>(function(){var t=document.querySelector('.nav-toggle'),l=document.getElementById('nav-links');if(!t||!l)return;var LBL={open:'Menu',close:'Close'};function set(o){t.setAttribute('aria-expanded',String(o));t.textContent=o?LBL.close:LBL.open;document.body.classList.toggle('nav-open',o);if(o){var f=l.querySelector('a');if(f)f.focus();}else{t.focus();}}t.addEventListener('click',function(){set(t.getAttribute('aria-expanded')!=='true');});l.addEventListener('click',function(e){if(e.target.closest('a'))set(false);});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&t.getAttribute('aria-expanded')==='true')set(false);});})();</script>
+  <script>(function(){var t=document.querySelector('.nav-toggle'),l=document.getElementById('nav-links');if(!t||!l)return;var LBL={open:'Menú',close:'Cerrar'};function set(o){t.setAttribute('aria-expanded',String(o));t.textContent=o?LBL.close:LBL.open;document.body.classList.toggle('nav-open',o);if(o){var f=l.querySelector('a');if(f)f.focus();}else{t.focus();}}t.addEventListener('click',function(){set(t.getAttribute('aria-expanded')!=='true');});l.addEventListener('click',function(e){if(e.target.closest('a'))set(false);});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&t.getAttribute('aria-expanded')==='true')set(false);});})();</script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
   <script>
-    // Care Trust motion: Gentle and brief. Nothing between the patient and the appointment button.
+    // Appetite Bold motion: Snappy and appetizing — quick like service, never sluggish.
     // GSAP is 100% free incl. SplitText/ScrambleText/DrawSVG — load what the build needs.
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!reduced && window.gsap) {
@@ -405,7 +307,7 @@
         if (!items.length) return;
         gsap.fromTo(items,
           { autoAlpha: 0, y: 28 },
-          { autoAlpha: 1, y: 0, duration: 1.0, ease: 'expo.out', /* tune to brand easing: cubic-bezier(0.33, 1, 0.68, 1) */ stagger: 0.12,
+          { autoAlpha: 1, y: 0, duration: 1.0, ease: 'expo.out', /* tune to brand easing: cubic-bezier(0.34, 1.2, 0.64, 1) */ stagger: 0.12,
             scrollTrigger: { trigger: group, start: 'top 78%' } }
         );
       });

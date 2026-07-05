@@ -3,27 +3,27 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Miravalen Family Health — Home / Landing</title>
-  <meta name="description" content="Home / Landing page for Miravalen Family Health." />
+  <title>Lexovane Legal — Home / Landing</title>
+  <meta name="description" content="Home / Landing page for Lexovane Legal." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      /* Care Trust — generated design tokens */
-      --color-bg: #ffffff;
-      --color-surface: #f7fafa;
-      --color-text: #1a2e2d;
-      --color-text-muted: #4a6663;
-      --color-accent: #0f6b5c;
-      --color-line: #e0ecea;
-      --font-display: 'Merriweather', Georgia, serif;
-      --font-body: 'Inter', system-ui, sans-serif;
+      /* Counsel Classic — generated design tokens */
+      --color-bg: #fcfcfb;
+      --color-surface: #f4f4f1;
+      --color-text: #1c2530;
+      --color-text-muted: #5a6472;
+      --color-accent: #123a63;
+      --color-line: #dfe2e6;
+      --font-display: 'Source Serif 4', Georgia, serif;
+      --font-body: 'Source Sans 3', system-ui, sans-serif;
       --size-hero: clamp(2.25rem, 5vw, 4rem);
       --size-h2: clamp(1.625rem, 3vw, 2.5rem);
       --size-body: 1.0625rem;
       --size-small: 0.875rem;
-      --ease-brand: cubic-bezier(0.33, 1, 0.68, 1);
+      --ease-brand: cubic-bezier(0.4, 0, 0.2, 1);
       --space-2xs: 0.25rem;
       --space-xs: 0.5rem;
       --space-sm: 1rem;
@@ -35,7 +35,7 @@
       --measure: 65ch;
     }
 
-    /* Base — Care Trust. Palette logic: White with pale-teal surfaces and a deep teal accent for actions and headings. Soft radii (6–24px) and soft shadows are correct here — this style rounds where others sharpen. Red only for genuine emergencies. */
+    /* Base — Counsel Classic. Palette logic: Paper white and deep navy — the palette of contracts and letterhead. No second accent. Sharp corners (2px radius max); softness undermines the message. */
     *, *::before, *::after { box-sizing: border-box; margin: 0; }
     html { scroll-behavior: smooth; }
     body { background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); font-size: var(--size-body); line-height: 1.7; -webkit-font-smoothing: antialiased; }
@@ -106,8 +106,8 @@
     .g-7 { grid-column: span 7; } .g-5 { grid-column: span 5; } .g-8 { grid-column: 3 / span 8; } .g-4 { grid-column: span 4; }
     .g-offset { margin-top: var(--space-xl); }
 
-    /* Image treatment — Care Trust */
-    .media { border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
+    /* Image treatment — Counsel Classic */
+    .media { border-radius: 2px; overflow: hidden; }
 
 
     /* Mobile sticky action bar (conversion contexts) */
@@ -176,19 +176,18 @@
 
     /* TODO(build): scaffold gives the structural skeleton — apply the style's
        signature details before shipping:
-       - Rounded cards with soft shadows — differentiated by content, never three identical
-       - Provider profiles with photo, credentials, languages spoken
-       - Transparent pricing/insurance/membership blocks
-       - Appointment CTA visible in every viewport (header + section-level)
-       - Hours, locations, and phone answered within one glance */
+       - Practice areas as a numbered index list, each with one plain-language sentence
+       - Attorney/partner profiles: photo, bar admissions, education, one human line
+       - Results stated carefully with substantiation or omitted ([TO CONFIRM] discipline is legal-critical)
+       - Consultation CTA with response-time promise; required disclaimers typeset cleanly in the footer */
   </style>
 </head>
-<body class="has-mobile-bar">
+<body>
   <a href="#main" style="position:absolute;left:-999px" onfocus="this.style.left='1rem'" onblur="this.style.left='-999px'">Skip to content</a>
 
-    <!-- Nav (solid-bar): Logo, services, providers, locations + teal 'Book Appointment' button and visible phone. Sticky on mobile. -->
+    <!-- Nav (solid-bar): Firm wordmark, practice areas / people / contact links, navy 'Consultation' CTA, phone visible. -->
     <nav class="nav nav--solid-bar" aria-label="Main">
-      <a class="nav-brand" href="#top">Miravalen Family Health</a>
+      <a class="nav-brand" href="#top">Lexovane Legal</a>
       <div class="nav-links" id="nav-links">
         <a href="#presentation">[Aspirational Presentation]</a>
         <a href="#gallery">[Curated Gallery / Showcase]</a>
@@ -200,66 +199,28 @@
     </nav>
 
   <main id="main">
-    <!-- Hero (split-media): Left: headline, reassurance subline, dual CTA (book + call), trust markers (same-day · bilingual · insurance). Right: rounded-mask photo of real staff/facility. -->
+    <!-- Hero (split-media): Left: plain-language headline about the client's problem (not the firm), one reassurance line, consultation CTA + response-time promise. Right: dignified portrait or office photo, sharp corners. -->
     <header class="hero hero--split-media" id="top">
       <div class="hero-copy" data-reveal-group>
-        <p class="eyebrow" data-reveal>FAMILY HEALTH CLINIC</p>
-        <!-- Headline rules: under 10 words, competitor-swap-proof, written only for Miravalen Family Health -->
-        <h1 class="hero-title" data-reveal>[Headline for Miravalen Family Health]</h1>
+        <p class="eyebrow" data-reveal>LAW FIRM</p>
+        <!-- Headline rules: under 10 words, competitor-swap-proof, written only for Lexovane Legal -->
+        <h1 class="hero-title" data-reveal>[Headline for Lexovane Legal]</h1>
         <p class="hero-sub" data-reveal>[One supporting line. Optional.]</p>
         <a class="cta" href="#cta" data-reveal>[Primary action]</a>
         <p class="trust-markers" data-reveal>[trust marker] · [trust marker] · [trust marker]</p>
       </div>
       <figure class="media"><!-- REEMPLAZAR: hero image — 4:5, treated per style -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-7/800/1000" alt="[describe: hero image — 4:5, treated per style]" loading="lazy" width="800" height="1000" />
+        <img src="https://picsum.photos/seed/lexovane-legal-7/800/1000" alt="[describe: hero image — 4:5, treated per style]" loading="lazy" width="800" height="1000" />
       </figure>
     </header>
 
     <section class="section section--presentation" id="presentation">
       <!-- Aspirational Presentation: Introduce who this is for and what it feels like — not a feature list.
          Copy guidance: 2–3 short paragraphs of editorial voice. Write to one reader, not a market segment.
-         Layout: split-5-7 -->
-      <div class="grid-12 layout-split">
-        <div class="g-text" data-reveal-group>
-        <p class="eyebrow" data-reveal>[Aspirational Presentation label]</p>
-        <h2 data-reveal>[Aspirational Presentation headline — specific to Miravalen Family Health]</h2>
-        <div class="section-body" data-reveal>[Content per guidance above]</div>
-      </div>
-        <figure class="media g-media"><!-- REEMPLAZAR: Aspirational Presentation image -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-1/900/700" alt="[describe: Aspirational Presentation image]" loading="lazy" width="900" height="700" />
-      </figure>
-      </div>
-    </section>
-
-    <section class="section section--gallery" id="gallery">
-      <!-- Curated Gallery / Showcase: Let the strongest visuals sell. Asymmetric editorial layout. — gallery pattern: editorial-asym. Facility and team photos with generous rounding; used sparingly — this style is content-led. -->
-      <div data-reveal-group>
-        <p class="eyebrow" data-reveal>[Curated Gallery / Showcase label]</p>
-        <h2 data-reveal>[Curated Gallery / Showcase headline — specific to Miravalen Family Health]</h2>
-      </div>
-      <div class="grid-12 gallery-asym" data-reveal>
-        <figure class="media g-7"><!-- REEMPLAZAR: wide establishing shot — 3:2 -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-2/900/600" alt="[describe: wide establishing shot — 3:2]" loading="lazy" width="900" height="600" />
-      </figure>
-        <figure class="media g-5 g-offset"><!-- REEMPLAZAR: vertical detail — 3:4, offset down -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-3/600/800" alt="[describe: vertical detail — 3:4, offset down]" loading="lazy" width="600" height="800" />
-      </figure>
-        <figure class="media g-8"><!-- REEMPLAZAR: wide scene — panoramic -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-4/1200/675" alt="[describe: wide scene — panoramic]" loading="lazy" width="1200" height="675" />
-      </figure>
-        <figure class="media g-4"><!-- REEMPLAZAR: intimate detail crop -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-5/600/600" alt="[describe: intimate detail crop]" loading="lazy" width="600" height="600" />
-      </figure>
-      </div>
-    </section>
-
-    <section class="section section--offer" id="offer">
-      <!-- What We Offer / Event Types / Services: Concrete offerings, each treated as its own small story — never three equal cards.
-         Copy guidance: Each offering gets a specific name, one vivid sentence, and a real detail that proves expertise.
          Layout: index-list -->
       <div data-reveal-group>
-        <p class="eyebrow" data-reveal>[What We Offer / Event Types / Services label]</p>
-        <h2 data-reveal>[What We Offer / Event Types / Services headline — specific to Miravalen Family Health]</h2>
+        <p class="eyebrow" data-reveal>[Aspirational Presentation label]</p>
+        <h2 data-reveal>[Aspirational Presentation headline — specific to Lexovane Legal]</h2>
         <ol class="index-list">
           <li class="index-row" data-reveal>
           <span class="index-num">01</span>
@@ -280,6 +241,44 @@
           <span class="index-meta">[meta]</span>
         </li>
         </ol>
+      </div>
+    </section>
+
+    <section class="section section--gallery" id="gallery">
+      <!-- Curated Gallery / Showcase: Let the strongest visuals sell. Asymmetric editorial layout. — gallery pattern: editorial-asym. Used sparingly — office, team at work, city context. This style is content-led; imagery supports, never decorates. -->
+      <div data-reveal-group>
+        <p class="eyebrow" data-reveal>[Curated Gallery / Showcase label]</p>
+        <h2 data-reveal>[Curated Gallery / Showcase headline — specific to Lexovane Legal]</h2>
+      </div>
+      <div class="grid-12 gallery-asym" data-reveal>
+        <figure class="media g-7"><!-- REEMPLAZAR: wide establishing shot — 3:2 -->
+        <img src="https://picsum.photos/seed/lexovane-legal-1/900/600" alt="[describe: wide establishing shot — 3:2]" loading="lazy" width="900" height="600" />
+      </figure>
+        <figure class="media g-5 g-offset"><!-- REEMPLAZAR: vertical detail — 3:4, offset down -->
+        <img src="https://picsum.photos/seed/lexovane-legal-2/600/800" alt="[describe: vertical detail — 3:4, offset down]" loading="lazy" width="600" height="800" />
+      </figure>
+        <figure class="media g-8"><!-- REEMPLAZAR: wide scene — panoramic -->
+        <img src="https://picsum.photos/seed/lexovane-legal-3/1200/675" alt="[describe: wide scene — panoramic]" loading="lazy" width="1200" height="675" />
+      </figure>
+        <figure class="media g-4"><!-- REEMPLAZAR: intimate detail crop -->
+        <img src="https://picsum.photos/seed/lexovane-legal-4/600/600" alt="[describe: intimate detail crop]" loading="lazy" width="600" height="600" />
+      </figure>
+      </div>
+    </section>
+
+    <section class="section section--offer" id="offer">
+      <!-- What We Offer / Event Types / Services: Concrete offerings, each treated as its own small story — never three equal cards.
+         Copy guidance: Each offering gets a specific name, one vivid sentence, and a real detail that proves expertise.
+         Layout: split-5-7 -->
+      <div class="grid-12 layout-split">
+        <div class="g-text" data-reveal-group>
+        <p class="eyebrow" data-reveal>[What We Offer / Event Types / Services label]</p>
+        <h2 data-reveal>[What We Offer / Event Types / Services headline — specific to Lexovane Legal]</h2>
+        <div class="section-body" data-reveal>[Content per guidance above]</div>
+      </div>
+        <figure class="media g-media"><!-- REEMPLAZAR: What We Offer / Event Types / Services image -->
+        <img src="https://picsum.photos/seed/lexovane-legal-5/900/700" alt="[describe: What We Offer / Event Types / Services image]" loading="lazy" width="900" height="700" />
+      </figure>
       </div>
     </section>
 
@@ -291,7 +290,7 @@
         <span class="section-numeral" aria-hidden="true">03</span>
         <div class="g-offset-content" data-reveal-group>
           <p class="eyebrow" data-reveal>[Differentiators label]</p>
-        <h2 data-reveal>[Differentiators headline — specific to Miravalen Family Health]</h2>
+        <h2 data-reveal>[Differentiators headline — specific to Lexovane Legal]</h2>
           <div class="section-body" data-reveal>[Content per guidance above]</div>
         </div>
       </div>
@@ -300,26 +299,10 @@
     <section class="section section--experience" id="experience">
       <!-- Experience & Atmosphere: Sensory storytelling section, often sticky/scroll-driven.
          Copy guidance: Present tense, second person. Walk the reader through the moment.
-         Layout: split-5-7 -->
-      <div class="grid-12 layout-split">
-        <div class="g-text" data-reveal-group>
-        <p class="eyebrow" data-reveal>[Experience & Atmosphere label]</p>
-        <h2 data-reveal>[Experience & Atmosphere headline — specific to Miravalen Family Health]</h2>
-        <div class="section-body" data-reveal>[Content per guidance above]</div>
-      </div>
-        <figure class="media g-media"><!-- REEMPLAZAR: Experience & Atmosphere image -->
-        <img src="https://picsum.photos/seed/miravalen-family-health-6/900/700" alt="[describe: Experience & Atmosphere image]" loading="lazy" width="900" height="700" />
-      </figure>
-      </div>
-    </section>
-
-    <section class="section section--proof" id="proof">
-      <!-- Social Proof: Substantiated reputation only — real quotes, real names/events, real ratings.
-         Copy guidance: Short verbatim quotes. Never invent testimonials; omit the section if unproven.
          Layout: index-list -->
       <div data-reveal-group>
-        <p class="eyebrow" data-reveal>[Social Proof label]</p>
-        <h2 data-reveal>[Social Proof headline — specific to Miravalen Family Health]</h2>
+        <p class="eyebrow" data-reveal>[Experience & Atmosphere label]</p>
+        <h2 data-reveal>[Experience & Atmosphere headline — specific to Lexovane Legal]</h2>
         <ol class="index-list">
           <li class="index-row" data-reveal>
           <span class="index-num">01</span>
@@ -343,11 +326,27 @@
       </div>
     </section>
 
+    <section class="section section--proof" id="proof">
+      <!-- Social Proof: Substantiated reputation only — real quotes, real names/events, real ratings.
+         Copy guidance: Short verbatim quotes. Never invent testimonials; omit the section if unproven.
+         Layout: split-5-7 -->
+      <div class="grid-12 layout-split">
+        <div class="g-text" data-reveal-group>
+        <p class="eyebrow" data-reveal>[Social Proof label]</p>
+        <h2 data-reveal>[Social Proof headline — specific to Lexovane Legal]</h2>
+        <div class="section-body" data-reveal>[Content per guidance above]</div>
+      </div>
+        <figure class="media g-media"><!-- REEMPLAZAR: Social Proof image -->
+        <img src="https://picsum.photos/seed/lexovane-legal-6/900/700" alt="[describe: Social Proof image]" loading="lazy" width="900" height="700" />
+      </figure>
+      </div>
+    </section>
+
     <section class="section section--faq" id="faq">
       <!-- FAQs: Remove friction from the decision. Answer the real objections. -->
       <div data-reveal-group>
         <p class="eyebrow" data-reveal>[FAQs label]</p>
-        <h2 data-reveal>[FAQs headline — specific to Miravalen Family Health]</h2>
+        <h2 data-reveal>[FAQs headline — specific to Lexovane Legal]</h2>
         <div class="faq-list">
           <details class="faq-item" data-reveal>
           <summary>[Question 1 — in the customer's words]</summary>
@@ -375,27 +374,22 @@
     </section>
   </main>
 
-    <!-- Footer (columns): Locations with hours per column; emergency/after-hours line clearly visible. -->
+    <!-- Footer (columns): Full contact + hours, bar/regulatory disclaimers typeset cleanly on the legal line — never hidden, never sloppy. -->
     <footer class="site-footer footer--columns">
       <div class="footer-grid">
-        <div><p class="footer-brand">Miravalen Family Health</p><p>[one-line brand statement]</p></div>
+        <div><p class="footer-brand">Lexovane Legal</p><p>[one-line brand statement]</p></div>
         <nav aria-label="Footer">[site links]</nav>
         <div>[address · phone · hours — full NAP if local]</div>
         <div>[social links]</div>
       </div>
-      <p class="footer-legal">© 2026 Miravalen Family Health. [legal links]</p>
+      <p class="footer-legal">© 2026 Lexovane Legal. [legal links]</p>
     </footer>
-    <!-- Mobile sticky action bar: the thumb-zone conversion surface. Wire real numbers. -->
-    <div class="mobile-cta-bar">
-      <a class="mcb-btn" href="tel:+10000000000"><!-- REEMPLAZAR: real phone -->[Call]</a>
-      <a class="mcb-btn mcb-btn--primary" href="https://wa.me/10000000000"><!-- REEMPLAZAR: real WhatsApp -->[WhatsApp]</a>
-    </div>
 
   <script>(function(){var t=document.querySelector('.nav-toggle'),l=document.getElementById('nav-links');if(!t||!l)return;var LBL={open:'Menu',close:'Close'};function set(o){t.setAttribute('aria-expanded',String(o));t.textContent=o?LBL.close:LBL.open;document.body.classList.toggle('nav-open',o);if(o){var f=l.querySelector('a');if(f)f.focus();}else{t.focus();}}t.addEventListener('click',function(){set(t.getAttribute('aria-expanded')!=='true');});l.addEventListener('click',function(e){if(e.target.closest('a'))set(false);});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&t.getAttribute('aria-expanded')==='true')set(false);});})();</script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
   <script>
-    // Care Trust motion: Gentle and brief. Nothing between the patient and the appointment button.
+    // Counsel Classic motion: Nearly still. Fast, precise, functional — like a well-run office.
     // GSAP is 100% free incl. SplitText/ScrambleText/DrawSVG — load what the build needs.
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!reduced && window.gsap) {
@@ -405,7 +399,7 @@
         if (!items.length) return;
         gsap.fromTo(items,
           { autoAlpha: 0, y: 28 },
-          { autoAlpha: 1, y: 0, duration: 1.0, ease: 'expo.out', /* tune to brand easing: cubic-bezier(0.33, 1, 0.68, 1) */ stagger: 0.12,
+          { autoAlpha: 1, y: 0, duration: 1.0, ease: 'expo.out', /* tune to brand easing: cubic-bezier(0.4, 0, 0.2, 1) */ stagger: 0.12,
             scrollTrigger: { trigger: group, start: 'top 78%' } }
         );
       });

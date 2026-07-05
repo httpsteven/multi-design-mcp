@@ -54,6 +54,7 @@ export const POLISH_CHECKLIST = [
 export const MOBILE_RULES = [
   "Design mobile-first: for local businesses 60-75% of traffic is phones. The mobile experience IS the product; desktop is the enhancement.",
   "Navigation must WORK on mobile: a hamburger toggle with aria-expanded, full-screen or panel menu in the brand's design language, closes on link tap and Escape. Never hide nav links without a functioning menu.",
+  "The open menu must keep a visible close control: the toggle stays fixed above the panel (higher z-index, solid background), relabels Menu → Close (localized: Menú → Cerrar), and focus moves to the first menu link on open and back to the toggle on close.",
   "Touch targets ≥ 44px; primary CTA reachable in the thumb zone (bottom half of viewport).",
   "Conversion sites (trades, clinics, venues taking bookings) get a sticky bottom action bar on mobile — Call + WhatsApp/Book — padded with env(safe-area-inset-bottom).",
   "Form inputs at 16px+ font size (prevents iOS auto-zoom on focus); labels always visible, never placeholder-only.",

@@ -6,7 +6,7 @@ It encodes a premium web methodology as callable tools: curated art directions, 
 
 ## What's inside
 
-**10 curated design directions** (the "multi" in multi-design):
+**18 curated design directions** (the "multi" in multi-design):
 
 | Style | Best for |
 |---|---|
@@ -23,10 +23,15 @@ It encodes a premium web methodology as callable tools: curated art directions, 
 | `craftsman-trust` | glass companies, contractors, roofing, local trades |
 | `care-trust` | health clinics, dental, therapy, veterinary, senior care |
 | `ivory-elegance` | light-mode venues, bridal, boutique hotels, spas |
+| `appetite-bold` | restaurants, taquerías, food trucks, cafés, catering |
+| `estate-serif` | real estate, developments, land, vacation rentals |
+| `iron-grit` | gyms, martial arts, trainers, barbershops, tattoo |
+| `counsel-classic` | law firms, accounting, insurance, advisors |
+| `showroom-drive` | dealerships, detailing, mechanics, rentals |
 
 Each style is a complete art direction: typography pairing (Google Fonts), palette with usage logic, motion character with exact easings, imagery direction, signature details, and style-specific prohibitions.
 
-**16 page blueprints**: `home`, `about`, `services`, `gallery`, `contact`, `pricing`, `faq`, `blog-index`, `blog-post`, `product`, `case-study`, `team`, `locations`, `careers`, `landing-local-service`, `coming-soon` — each a narrative section structure with per-section copywriting guidance. `landing-local-service` is the batch workhorse for lead-gen pages (quote form, proof of work, credentials, service area, reviews) — repeat it per city or per service in `plan_site`.
+**18 page blueprints**: `home`, `about`, `services`, `gallery`, `contact`, `pricing`, `faq`, `blog-index`, `blog-post`, `product`, `case-study`, `team`, `locations`, `careers`, `landing-local-service`, `menu`, `landing-campaign`, `coming-soon` — each a narrative section structure with per-section copywriting guidance. Three are batch workhorses for mass generation: `landing-local-service` (repeat per city/service), `landing-campaign` (repeat per promo/package/season), and `menu` (restaurant menus as typography with one-tap ordering).
 
 **Composition layer** — every style also defines its physical structure, not just its look:
 - a **hero architecture** (immersive full-bleed / conversion split-form with quote card / editorial split-media / typographic / ceremonial framed / fashion campaign),
@@ -43,7 +48,11 @@ This spec appears in every build brief ("Layout & Composition") and is physicall
 
 **Modern stack intelligence** — [stacks.js](src/data/stacks.js) is a curated, verified-2026 library catalog with when-to-use and premium-restraint notes: GSAP (**100% free since April 2025 including SplitText/ScrambleText/DrawSVG/MorphSVG** — the briefs tell builders to stop hand-rolling these), Lenis momentum scroll (auto-wired into scaffolds via `gsap.ticker`, deliberately skipped for trust-sector styles where native scroll reads more honest), Motion, anime.js v4, OGL vs Three.js guidance, PhotoSwipe, Embla, native View Transitions API, Alpine for the EN/ES toggle, and Astro as the batch-generation upgrade path. Recipes cover the static-host realities: forms with no backend (WhatsApp deep link + Formspree), page transitions on MPA, 50-city-page generation. Every flourish now names its exact library. Briefs get a "Modern Stack" section automatically; `plan_site` adds batch advice at 5+ pages.
 
-**Mobile-usable by contract** — every layer enforces it. Briefs carry a "Mobile Mandate" (mobile-first for local businesses, 44px touch targets, thumb-zone CTAs, no hover-dependent info, svh units, zero overflow at 360px, pointer flourishes gated behind `(pointer: fine)`). `quality_standards` has a `mobile` section for audits. Scaffolds ship a **working hamburger menu** (aria-expanded, full-screen panel in the brand's design language, closes on link tap/Escape, scroll-locked body), a **sticky Call/WhatsApp action bar** on conversion contexts (trades/clinic styles + lead-gen/contact/pricing pages, safe-area-inset padded), and 16px-floor form inputs so iOS never auto-zooms.
+**Interactive scroll (the AirPods mechanic)** — the `scrub-sequence` flourish scaffolds a real scroll-scrubbed sequence: a 300vh track with a sticky viewport and a canvas whose drawing is driven by scroll progress. It ships with a **procedural placeholder** (a rotating wireframe product in the brand's accent color) so the mechanic works before any assets exist; swap in real frames via `data-frames`/`data-frame-count` (ffmpeg extraction command is in the section comment — 60–120 webp frames from a product video or Blender turntable). Sticky-based, so scroll is never hijacked; static frame under `prefers-reduced-motion`. Available in the variation pools of the product/story-driven styles (noir, tech, showroom, fashion, iron, editorial).
+
+**Multi-page sites** — `plan_site`/`bootstrap_website` produce per-page briefs with consistency rules, and `scaffold_site` materializes the whole thing: every page shares byte-identical tokens/nav/footer, nav links are real relative hrefs with `aria-current` on the active page, and interior pages automatically use a reduced-height version of the same hero architecture.
+
+**Mobile-usable by contract** — every layer enforces it. Briefs carry a "Mobile Mandate" (mobile-first for local businesses, 44px touch targets, thumb-zone CTAs, no hover-dependent info, svh units, zero overflow at 360px, pointer flourishes gated behind `(pointer: fine)`). `quality_standards` has a `mobile` section for audits. Scaffolds ship a **working hamburger menu** — the toggle is fixed on mobile so it can never scroll away or be covered by the open panel, relabels Menu ↔ Close (localized Menú ↔ Cerrar), manages focus (into the menu on open, back to the toggle on close), closes on link tap/Escape, and scroll-locks the body — plus a **sticky Call/WhatsApp action bar** on conversion contexts (trades/clinic styles + lead-gen/contact/pricing pages, safe-area-inset padded), and 16px-floor form inputs so iOS never auto-zooms.
 
 **Language support**: set `business.language` to `'en'`, `'es'`, or `'bilingual en/es'`. Single-language briefs enforce all copy rules in that language; bilingual briefs mandate a language toggle with a shared I18N strings object, both languages written with equal care. Scaffolds set `<html lang>` accordingly.
 
@@ -51,6 +60,7 @@ This spec appears in every build brief ("Layout & Composition") and is physicall
 
 | Tool | Purpose |
 |---|---|
+| `bootstrap_website` | **The entry point** — one call: ranked style + name-derived deterministic variation + full site plan with every build brief + workflow |
 | `list_design_styles` / `get_design_style` | Browse and inspect art directions |
 | `recommend_style` | Ranked style recommendation for an industry + mood |
 | `list_page_blueprints` / `get_page_blueprint` | Browse page narrative structures |
@@ -58,6 +68,7 @@ This spec appears in every build brief ("Layout & Composition") and is physicall
 | `compose_build_prompt` | Complete agency-grade build brief for one page |
 | `plan_site` | **Batch generation**: shared design system + consistency rules + a ready build brief for every page |
 | `scaffold_page` | Actual starter HTML: tokens, semantic sections, GSAP reveals, reduced-motion support |
+| `scaffold_site` | A complete **linked multi-page site** in one call: shared tokens, real cross-page nav with aria-current, reduced interior heroes |
 | `quality_standards` | Anti-patterns, motion/copy rules, polish checklist, decision hierarchy |
 | `generate_variations` | Preview seeded variations of a style: alternate hero + gallery + layout order + flourishes |
 | `get_design_trends` | SOTA catalog (July 2026): trends with premium-use guidance + the full flourish library |
@@ -116,4 +127,4 @@ npm test   # spins up the server over stdio and exercises every tool
 - Everything targets static hosting (GitHub Pages ready); the `react` stack option produces briefs for exportable React/Next instead.
 - The server never invents business facts — briefs instruct the builder to mark unknowns `[TO CONFIRM]`.
 - `examples/` contains generated scaffolds across styles and variation seeds you can open in a browser.
-- All brand names in examples, tests, and docs (Casa Vesperalta, Vitrelora Glass Co., Miravalen Family Health, Quorvane Systems, Terraza Alborela) are **coined fictional names** verified against the web for zero collision with real businesses. Any resemblance is coincidental — replace with the real client's name at build time.
+- All brand names in examples, tests, and docs (Casa Vesperalta, Vitrelora Glass Co., Miravalen Family Health, Quorvane Systems, Terraza Alborela, Taquería Solmarela, Alborvane Motorworks, Terravalen Properties, Forjaline Athletics, Lexovane Legal) are **coined fictional names** verified against the web for zero collision with real businesses. Any resemblance is coincidental — replace with the real client's name at build time.

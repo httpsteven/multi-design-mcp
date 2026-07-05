@@ -93,7 +93,7 @@ ${variation.flourishes.map((f, i) => `  ${i + 1}. **${f.name}** (${f.cost} cost)
 
 /* Modern stack section for briefs: core motion recipe + libraries demanded
    by the chosen flourishes + contextual recipes (galleries, forms, react). */
-const NATIVE_SCROLL_STYLES = new Set(["craftsman-trust", "care-trust"]);
+const NATIVE_SCROLL_STYLES = new Set(["craftsman-trust", "care-trust", "counsel-classic", "appetite-bold"]);
 
 function stackSection({ styleId, blueprint, variation, stack }) {
   const lines = [`- **Core motion:** ${RECIPES["premium-motion-core"].recipe}`];
@@ -368,10 +368,10 @@ export function composeSitePlan({ styleId, business = {}, pages, stack = "static
 
 const GALLERY_IDS = new Set(["gallery", "proof-work", "collections", "feature", "context", "location-blocks", "directory"]);
 const FAQ_IDS = new Set(["faq", "groups"]);
-const CTA_IDS = new Set(["cta", "join", "next"]);
+const CTA_IDS = new Set(["cta", "join", "next", "order"]);
 const FORM_IDS = new Set(["form", "capture"]);
 
-export function scaffoldPage({ styleId, pageType = "home", business = {}, includeGsap = true, variationSeed = 0 }) {
+export function scaffoldPage({ styleId, pageType = "home", business = {}, includeGsap = true, variationSeed = 0, siteNav = null, slug = null }) {
   const style = getStyle(styleId);
   if (!style) throw new Error(`Unknown style "${styleId}".`);
   const blueprint = getBlueprint(pageType);
@@ -701,12 +701,53 @@ export function scaffoldPage({ styleId, pageType = "home", business = {}, includ
       </div>`;
   }
 
+  /* ------- scroll-scrubbed sequence (Apple AirPods mechanic) ------- */
+  const SEQUENCE_TARGETS = new Set(["experience", "story", "presentation", "approach", "feature", "context"]);
+  let sequenceUsed = false;
+  function sequenceHtml(s) {
+    sequenceUsed = true;
+    return `<!-- ${s.name} as a scroll-scrubbed sequence (Apple AirPods mechanic).
+      REEMPLAZAR: real frames — ffmpeg -i product.mp4 -vf "scale=1600:-2" frames/f_%04d.webp (60–120 frames),
+      then set data-frames="frames/f_%04d.webp" data-frame-count="90" on the canvas below.
+      Until then, a procedural placeholder (rotating wireframe) demonstrates the mechanic. -->
+      <div class="pin-seq-track">
+        <div class="pin-seq">
+          <canvas class="seq-canvas" width="1600" height="900" aria-hidden="true"></canvas>
+          <div class="seq-copy">
+            <p class="eyebrow">[${s.name} label]</p>
+            <h2>[The story told in rotation — one line per scroll phase]</h2>
+          </div>
+        </div>
+      </div>`;
+  }
+  const seqCss = flourishIds.has("scrub-sequence")
+    ? `\n    /* Scroll-scrub sequence: parent gives scroll room, inner viewport sticks */
+    .section--sequence { padding: 0; }
+    .pin-seq-track { height: 300vh; }
+    .pin-seq { position: sticky; top: 0; height: 100svh; display: grid; place-items: center; overflow: hidden; }
+    .seq-canvas { width: min(90vw, 1100px); height: auto; aspect-ratio: 16/9; }
+    .seq-copy { position: absolute; left: var(--gutter); bottom: var(--space-lg); max-width: 34rem; }`
+    : "";
+  const seqJs = flourishIds.has("scrub-sequence")
+    ? `\n  <script>(function(){var c=document.querySelector('.seq-canvas');if(!c)return;var ctx=c.getContext('2d');var track=c.closest('.pin-seq-track');var reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;var frames=null,count=0;if(c.dataset.frames){count=parseInt(c.dataset.frameCount||'0',10);frames=[];for(var i=1;i<=count;i++){var im=new Image();im.src=c.dataset.frames.replace('%04d',String(i).padStart(4,'0'));frames.push(im);}}
+function draw(p){var w=c.width,h=c.height;ctx.clearRect(0,0,w,h);if(frames&&count){var f=frames[Math.min(count-1,Math.floor(p*count))];if(f&&f.complete&&f.naturalWidth){ctx.drawImage(f,0,0,w,h);return;}}
+/* Procedural placeholder: wireframe product rotating with scroll */var a=p*Math.PI*2,cx=w/2,cy=h/2,s=h*0.3;ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--color-accent')||'#fff';ctx.lineWidth=2;var pts=[];for(var v=0;v<8;v++){var x=(v&1?1:-1)*s,y=(v&2?1:-1)*s*0.6,z=(v&4?1:-1)*s*0.6;var rx=x*Math.cos(a)-z*Math.sin(a),rz=x*Math.sin(a)+z*Math.cos(a);var d=1+rz/(s*4);pts.push([cx+rx*d,cy+y*d]);}
+[[0,1],[1,3],[3,2],[2,0],[4,5],[5,7],[7,6],[6,4],[0,4],[1,5],[2,6],[3,7]].forEach(function(e){ctx.beginPath();ctx.moveTo(pts[e[0]][0],pts[e[0]][1]);ctx.lineTo(pts[e[1]][0],pts[e[1]][1]);ctx.stroke();});}
+if(reduced){draw(0.35);return;}var tick=false;function onScroll(){if(tick)return;tick=true;requestAnimationFrame(function(){tick=false;var r=track.getBoundingClientRect();var p=Math.min(1,Math.max(0,-r.top/(r.height-innerHeight)));draw(p);});}addEventListener('scroll',onScroll,{passive:true});draw(0);})();</script>`
+    : "";
+
   /* ------- assemble sections ------- */
   const bodySections = [];
   let contentIdx = 0;
   for (const s of blueprint.sections) {
     if (s.id === "hero" || s.id === "header" || s.id === "footer") continue;
     let inner;
+    if (flourishIds.has("scrub-sequence") && !sequenceUsed && SEQUENCE_TARGETS.has(s.id)) {
+      bodySections.push(`    <section class="section section--sequence" id="${s.id}">
+      ${sequenceHtml(s)}
+    </section>`);
+      continue;
+    }
     if (GALLERY_IDS.has(s.id)) {
       inner = `<!-- ${s.name}: ${s.purpose} — gallery pattern: ${comp.gallery.variant}. ${comp.gallery.notes} -->
       <div data-reveal-group>
@@ -729,12 +770,17 @@ export function scaffoldPage({ styleId, pageType = "home", business = {}, includ
     </section>`);
   }
 
-  /* ------- nav ------- */
-  const navLinks = blueprint.sections
-    .filter((s) => !["hero", "header", "footer", "cta"].includes(s.id))
-    .slice(0, 4)
-    .map((s) => `<a href="#${s.id}">[${s.name}]</a>`)
-    .join("\n        ");
+  /* ------- nav (anchor links solo; real page links when part of a site) ------- */
+  const isInterior = Array.isArray(siteNav) && siteNav.some((n) => n.current && n.file !== "index.html");
+  const navLinks = Array.isArray(siteNav)
+    ? siteNav
+        .map((n) => `<a href="${n.file}"${n.current ? ' aria-current="page"' : ""}>${n.title}</a>`)
+        .join("\n        ")
+    : blueprint.sections
+        .filter((s) => !["hero", "header", "footer", "cta"].includes(s.id))
+        .slice(0, 4)
+        .map((s) => `<a href="#${s.id}">[${s.name}]</a>`)
+        .join("\n        ");
   const navHtml = `    <!-- Nav (${comp.nav.variant}): ${comp.nav.notes} -->
     <nav class="nav nav--${comp.nav.variant}" aria-label="Main">
       <a class="nav-brand" href="#top">${name}</a>
@@ -995,7 +1041,10 @@ ${ds.cssVariables.split("\n").map((l) => "    " + l).join("\n")}
 
     /* Image treatment — ${style.name} */
     ${comp.treatmentCss || "/* none — images run untreated */"}
-${flourishCss}
+${flourishCss}${seqCss}
+
+    /* Interior pages (multi-page sites): reduced hero, same architecture */
+    .hero.hero--interior { min-height: 58svh; }
 
     /* Mobile sticky action bar (conversion contexts) */
     .mobile-cta-bar { display: none; }
@@ -1038,13 +1087,14 @@ ${flourishCss}
       .masonry { columns: 1; }
       .single-stack .work { max-width: 100%; }
       .footer-grid { grid-template-columns: 1fr 1fr; }
-      /* Mobile menu: hamburger + full-screen panel in the brand's language */
-      .nav-toggle { display: inline-flex; align-items: center; margin-left: auto; }
+      /* Mobile menu: hamburger + full-screen panel in the brand's language.
+         The toggle is FIXED so it can never scroll away (overlay navs) or be
+         covered by the open panel — closing is always one visible tap. */
+      .nav-toggle { display: inline-flex; align-items: center; justify-content: center; position: fixed; top: .75rem; right: var(--gutter); z-index: 35; background: var(--color-bg); }
       .cta--nav { display: none; }
       .nav-links { display: none; position: fixed; inset: 0; z-index: 25; background: var(--color-bg); flex-direction: column; justify-content: center; gap: var(--space-md); padding: var(--space-lg) var(--gutter); margin-left: 0; font-size: 1.5rem; }
       body.nav-open .nav-links { display: flex; }
       body.nav-open { overflow: hidden; }
-      body.nav-open .nav { z-index: 30; }
       .nav-links a { min-height: 44px; display: inline-flex; align-items: center; }
       .faq-item summary { min-height: 44px; display: flex; align-items: center; }
       .band img { height: 55vh; }
@@ -1071,7 +1121,7 @@ ${style.signatureDetails.map((d) => "       - " + d).join("\n")} */
 ${navHtml}
 
   <main id="main">
-${heroHtml()}${tickerHtml}
+${isInterior ? heroHtml().replace('class="hero ', 'class="hero hero--interior ') : heroHtml()}${tickerHtml}
 
 ${bodySections.join("\n\n")}
   </main>
@@ -1110,13 +1160,13 @@ ${includeGsap ? `  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.mi
     } else {
       document.querySelectorAll('[data-reveal]').forEach((el) => { el.style.opacity = 1; el.style.visibility = 'visible'; });
     }
-  </script>` : ""}${progressJs}${flourishTodo}
+  </script>` : ""}${seqJs}${progressJs}${flourishTodo}
 </body>
 </html>
 `;
 
   return {
-    file: `${pageType === "home" ? "index" : pageType}.html`,
+    file: `${slug || (pageType === "home" ? "index" : pageType)}.html`,
     html,
     composition: {
       nav: comp.nav.variant,
@@ -1128,6 +1178,9 @@ ${includeGsap ? `  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.mi
       flourishes: variation.flourishes.map((f) => `${f.id}${f.scaffolded ? " (scaffolded)" : " (spec in HTML comment)"}`)
     },
     reminders: [
+      ...(sequenceUsed
+        ? ["Scroll-scrub sequence included with a procedural placeholder — replace with real frames (ffmpeg command in the section comment) before shipping."]
+        : []),
       ...(variation.isDefault
         ? []
         : [`Variation seed ${variation.seed} applied: hero=${variation.hero}, gallery=${variation.gallery}. Flourishes marked (scaffolded) are already implemented; the rest are specced in a VARIATION FLOURISHES comment before </body> and must be built.`]),
@@ -1136,5 +1189,58 @@ ${includeGsap ? `  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.mi
       `Style prohibitions: ${style.avoid.join("; ")}`,
       "Replace every [bracketed placeholder]; run the polish checklist (quality_standards tool) before shipping."
     ]
+  };
+}
+
+/* ------------------------------- site scaffold --------------------------------
+   Emits a complete linked multi-page site: every page shares identical tokens,
+   nav (real hrefs + aria-current), and footer; interior pages get reduced heroes. */
+
+export function scaffoldSite({ styleId, business = {}, pages, variationSeed = 0, includeGsap = true }) {
+  const style = getStyle(styleId);
+  if (!style) throw new Error(`Unknown style "${styleId}".`);
+  if (!Array.isArray(pages) || pages.length === 0) throw new Error("Provide at least one page: [{ pageType, title?, slug? }]");
+
+  const navEntries = pages.map((pg) => {
+    const bp = getBlueprint(pg.pageType);
+    if (!bp) throw new Error(`Unknown pageType "${pg.pageType}".`);
+    const slugName = pg.slug || (pg.pageType === "home" ? "index" : pg.pageType);
+    return { title: pg.title || (pg.pageType === "home" ? business.name || "Home" : bp.name.split(" (")[0].split(" / ")[0]), file: `${slugName}.html`, slug: slugName, pageType: pg.pageType };
+  });
+  const seen = new Set();
+  for (const n of navEntries) {
+    if (seen.has(n.file)) throw new Error(`Duplicate output file '${n.file}' — give repeated pageTypes distinct slugs.`);
+    seen.add(n.file);
+  }
+
+  const variation = buildVariation(styleId, variationSeed);
+  const files = navEntries.map((entry) => {
+    const out = scaffoldPage({
+      styleId,
+      pageType: entry.pageType,
+      business,
+      includeGsap,
+      variationSeed,
+      slug: entry.slug,
+      siteNav: navEntries.map((n) => ({ title: n.title, file: n.file, current: n.file === entry.file }))
+    });
+    return { file: out.file, html: out.html, composition: out.composition };
+  });
+
+  return {
+    site: {
+      style: style.id,
+      business: business.name || "(unnamed)",
+      pageCount: files.length,
+      variationSeed: variation.seed,
+      variation: variation.isDefault ? "default composition" : `hero=${variation.hero}, gallery=${variation.gallery}, flourishes=[${variation.flourishes.map((f) => f.id).join(", ")}]`
+    },
+    consistency: [
+      "All pages share identical :root tokens, nav (real links, aria-current on the current page), and footer.",
+      "Interior pages use the reduced-height version of the same hero architecture (hero--interior).",
+      "Relative links only — deployable to GitHub Pages project URLs as-is.",
+      "Craft each page to its build brief (compose_build_prompt with the same styleId + variationSeed) — these scaffolds are the structural bones."
+    ],
+    files
   };
 }

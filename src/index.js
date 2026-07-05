@@ -28,7 +28,8 @@ import {
   composeDesignSystem,
   composeBuildPrompt,
   composeSitePlan,
-  scaffoldPage
+  scaffoldPage,
+  scaffoldSite
 } from "./generators.js";
 import { buildVariation, VARIATION_SPACE, FLOURISHES } from "./data/variations.js";
 import { getTrends } from "./data/trends.js";
@@ -72,6 +73,41 @@ const variationSeedSchema = z
 const text = (data) => ({
   content: [{ type: "text", text: typeof data === "string" ? data : JSON.stringify(data, null, 2) }]
 });
+
+/* Shared style-ranking used by recommend_style and bootstrap_website. */
+function rankStyles(industry, mood = []) {
+  const q = (industry || "").toLowerCase();
+  const moods = mood.map((m) => m.toLowerCase());
+  const scored = listStyles().map((s) => {
+    const full = getStyle(s.id);
+    let score = 0;
+    const reasons = [];
+    for (const b of full.bestFor) {
+      const words = b.toLowerCase().split(/[^a-zà-ú]+/).filter((w) => w.length > 3);
+      if (b.toLowerCase().includes(q) || q.includes(b.toLowerCase()) || words.some((w) => q.includes(w))) {
+        score += 3;
+        reasons.push(`listed best-for: '${b}'`);
+        break;
+      }
+    }
+    const styleText = `${full.summary} ${full.motion.character} ${full.imagery}`.toLowerCase();
+    for (const m of moods) {
+      if (styleText.includes(m)) {
+        score += 1;
+        reasons.push(`matches mood '${m}'`);
+      }
+    }
+    return { id: s.id, name: s.name, score, reasons, summary: s.summary };
+  });
+  scored.sort((a, b) => b.score - a.score);
+  return scored;
+}
+
+/* Deterministic seed from the business name: different businesses never
+   share bones by default, and re-running for the same business is stable. */
+function seedFromName(name) {
+  return (String(name || "site").split("").reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7) % 97) + 1;
+}
 
 /* ---------------------------------- tools ----------------------------------- */
 
@@ -165,6 +201,29 @@ server.tool(
 );
 
 server.tool(
+  "scaffold_site",
+  "Generate a complete LINKED multi-page site in one call: every page shares identical design tokens, a real cross-page nav (relative hrefs, aria-current on the active page), and footer; interior pages automatically get the reduced-height version of the same hero architecture. Returns one {file, html} entry per page, ready to write to disk and deploy to GitHub Pages. Use after bootstrap_website/plan_site to materialize the whole site's structural bones with one variationSeed.",
+  {
+    styleId: styleIdSchema,
+    business: businessSchema,
+    pages: z
+      .array(
+        z.object({
+          pageType: pageTypeSchema,
+          title: z.string().optional().describe("Nav label override"),
+          slug: z.string().optional().describe("Output filename (without .html); required when a pageType repeats")
+        })
+      )
+      .min(1)
+      .describe("Pages in nav order; first is usually home"),
+    variationSeed: variationSeedSchema,
+    includeGsap: z.boolean().optional()
+  },
+  async ({ styleId, business, pages, variationSeed, includeGsap }) =>
+    text(scaffoldSite({ styleId, business: business || {}, pages, variationSeed: variationSeed || 0, includeGsap: includeGsap !== false }))
+);
+
+server.tool(
   "generate_variations",
   "Preview N distinct variations of a style before building: each seed deterministically combines an alternate hero architecture, gallery pattern, shuffled layout rotation, and 2-3 signature flourishes (grain, marquee, custom cursor, pinned scenes, WebGL accent...). Pick a seed, then pass it as variationSeed to compose_build_prompt / plan_site / scaffold_page. This is how sibling sites in the same style get different bones.",
   {
@@ -199,11 +258,72 @@ server.tool(
 );
 
 server.tool(
+  "bootstrap_website",
+  "THE ENTRY POINT for building a website — one call that forces the full methodology, no skippable steps: ranks the best style for the business, derives a deterministic variation seed from the business name (different businesses never share bones; same business always gets the same result), and returns the complete package — style choice with reasoning, applied variation, shared design system, cross-page consistency rules, a ready-to-execute build brief for EVERY page, and the workflow order. Execute the returned briefs one by one; audit each page with quality_standards before shipping.",
+  {
+    business: businessSchema,
+    pages: z
+      .array(
+        z.object({
+          pageType: pageTypeSchema,
+          title: z.string().optional(),
+          slug: z.string().optional(),
+          notes: z.string().optional()
+        })
+      )
+      .optional()
+      .describe("Pages to build. Omit for the default local-business sitemap (home, services, gallery, faq, contact)."),
+    styleId: z.string().optional().describe("Force a specific style instead of the ranked recommendation"),
+    variationSeed: variationSeedSchema,
+    mood: z.array(z.string()).optional().describe("Mood words to bias style ranking, e.g. ['dark','dramatic']"),
+    stack: stackSchema
+  },
+  async ({ business, pages, styleId, variationSeed, mood, stack }) => {
+    const biz = business || {};
+    const ranked = rankStyles(biz.industry || "", mood || []);
+    const chosen = styleId && getStyle(styleId) ? styleId : ranked[0].id;
+    const seed = variationSeed && variationSeed > 0 ? variationSeed : seedFromName(biz.name);
+    const pageList = pages && pages.length ? pages : [
+      { pageType: "home" },
+      { pageType: "services" },
+      { pageType: "gallery" },
+      { pageType: "faq" },
+      { pageType: "contact" }
+    ];
+    const plan = composeSitePlan({ styleId: chosen, business: biz, pages: pageList, stack: stack || "static", variationSeed: seed });
+    const variation = buildVariation(chosen, seed);
+    return text({
+      style: {
+        chosen,
+        reasoning: styleId ? ["forced by caller"] : ranked[0].reasons,
+        runnersUp: ranked.slice(1, 3).filter((s) => s.score > 0).map(({ id, name, reasons }) => ({ id, name, reasons }))
+      },
+      variation: {
+        seed,
+        seedSource: variationSeed && variationSeed > 0 ? "caller" : "derived from business name (deterministic)",
+        hero: variation.hero,
+        gallery: variation.gallery,
+        flourishes: variation.flourishes.map((f) => f.id)
+      },
+      workflow: [
+        "1. Confirm the style choice with the human if their brand has an existing direction.",
+        "2. Build pages in the plan's order — home first locks the design language.",
+        "3. Each page: follow its buildPrompt exactly (tokens, composition, variation directive, mobile mandate are all inside). Optionally start from scaffold_page with the same styleId + variationSeed.",
+        "4. Keep nav/footer byte-identical across pages per the consistency rules.",
+        "5. Before shipping each page: audit against quality_standards (anti-patterns, mobile, polish checklist).",
+        "6. Never invent business facts — [TO CONFIRM] markers stay until the client confirms."
+      ],
+      sitePlan: plan
+    });
+  }
+);
+
+server.tool(
   "recommend_stack",
   "Curated modern library intelligence (verified July 2026) for premium static-first sites: GSAP (100% free since April 2025 INCLUDING SplitText/ScrambleText/DrawSVG/MorphSVG), Lenis momentum scroll, Motion, anime.js v4, OGL/Three.js, PhotoSwipe, Embla, View Transitions API, Alpine, Astro for batch static generation, and more — each with when-to-use and premium-restraint notes. Optionally pass a need to get the exact recipe (e.g. 'text-reveals', 'static-forms', 'batch-page-generation').",
   {
     need: z
-      .enum(["premium-motion-core", "text-reveals", "page-transitions", "gallery-lightbox", "webgl-accent", "static-forms", "batch-page-generation", "micro-interactions", "bilingual-toggle"])
+      .enum(["premium-motion-core", "text-reveals", "page-transitions", "gallery-lightbox", "webgl-accent", "scroll-sequence", "static-forms", "batch-page-generation", "micro-interactions", "bilingual-toggle"])
       .optional()
       .describe("A specific need — returns that recipe plus the full catalog context")
   },
@@ -260,30 +380,7 @@ server.tool(
     mood: z.array(z.string()).optional().describe("Desired mood words, e.g. ['dramatic','dark'] or ['warm','natural']")
   },
   async ({ industry, mood }) => {
-    const q = industry.toLowerCase();
-    const moods = (mood || []).map((m) => m.toLowerCase());
-    const scored = listStyles().map((s) => {
-      const full = getStyle(s.id);
-      let score = 0;
-      const reasons = [];
-      for (const b of full.bestFor) {
-        const words = b.toLowerCase().split(/[^a-z]+/).filter((w) => w.length > 3);
-        if (b.toLowerCase().includes(q) || q.includes(b.toLowerCase()) || words.some((w) => q.includes(w))) {
-          score += 3;
-          reasons.push(`listed best-for: '${b}'`);
-          break;
-        }
-      }
-      const styleText = `${full.summary} ${full.motion.character} ${full.imagery}`.toLowerCase();
-      for (const m of moods) {
-        if (styleText.includes(m)) {
-          score += 1;
-          reasons.push(`matches mood '${m}'`);
-        }
-      }
-      return { id: s.id, name: s.name, score, reasons, summary: s.summary };
-    });
-    scored.sort((a, b) => b.score - a.score);
+    const scored = rankStyles(industry, mood || []);
     const top = scored.filter((s) => s.score > 0).slice(0, 3);
     return text({
       recommendations: top.length ? top : [{ note: "No strong keyword match — review these defaults", fallbacks: [scored[0], ...scored.slice(1, 3)] }],
@@ -310,12 +407,10 @@ server.prompt(
           type: "text",
           text: `Build a premium website for "${businessName}" (${industry}).${details ? `\n\nContext:\n${details}` : ""}
 
-Use the multi-design MCP tools in this order:
-1. recommend_style — pick the art direction (confirm with me if uncertain).
-2. quality_standards — load the quality contract; it governs everything.
-3. plan_site — plan the pages (propose a sensible sitemap for this business).
-4. For each page: follow its buildPrompt from the plan; optionally start from scaffold_page and craft the premium finish on top.
-5. Audit every page against the polish checklist before declaring it done.
+Start with ONE call: bootstrap_website with the business info (and a custom page list if the default sitemap doesn't fit). It returns the chosen style with reasoning, a deterministic variation, the shared design system, and a ready build brief for every page. Then:
+1. Confirm the style direction with me if my brand already has one.
+2. Execute each page's buildPrompt in order (home first); optionally start from scaffold_page with the same styleId + variationSeed.
+3. Audit every page against quality_standards (anti-patterns, mobile, polish checklist) before declaring it done.
 
 Never invent unconfirmed business facts — mark them [TO CONFIRM]. The result must be static-host ready (GitHub Pages).`
         }

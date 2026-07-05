@@ -136,12 +136,12 @@ export const FLOURISHES = {
  */
 export const VARIATION_SPACE = {
   "editorial-luxury": {
-    heroes: ["immersive", "split-media", "collage"],
+    heroes: ["immersive", "split-media", "collage", "dolly-zoom"],
     galleries: ["editorial-asym", "horizontal-scroll", "stacked-cards"],
     flourishes: ["split-text-mask", "preloader-wordmark", "grain-overlay", "parallax-layers", "oversized-footer", "image-trail", "custom-cursor", "sticky-scenes", "scrub-sequence"]
   },
   "cinematic-noir": {
-    heroes: ["immersive", "kinetic-type", "campaign"],
+    heroes: ["immersive", "kinetic-type", "campaign", "dolly-zoom"],
     galleries: ["horizontal-scroll", "stacked-cards", "single-stack"],
     flourishes: ["sticky-scenes", "grain-overlay", "custom-cursor", "text-scramble", "preloader-wordmark", "scroll-progress", "three-accent", "split-text-mask", "scrub-sequence"]
   },
@@ -181,7 +181,7 @@ export const VARIATION_SPACE = {
     flourishes: ["marquee-ticker", "image-trail", "grain-overlay", "variable-font-hover", "oversized-footer"]
   },
   "monochrome-fashion": {
-    heroes: ["campaign", "kinetic-type", "immersive"],
+    heroes: ["campaign", "kinetic-type", "immersive", "dolly-zoom"],
     galleries: ["horizontal-scroll", "single-stack"],
     flourishes: ["custom-cursor", "image-trail", "split-text-mask", "view-transition-wipe", "oversized-footer", "preloader-wordmark", "scrub-sequence"]
   },
@@ -196,7 +196,7 @@ export const VARIATION_SPACE = {
     flourishes: ["scroll-progress", "magnetic-buttons", "view-transition-wipe"]
   },
   "ivory-elegance": {
-    heroes: ["immersive", "split-media", "collage"],
+    heroes: ["immersive", "split-media", "collage", "dolly-zoom"],
     galleries: ["editorial-asym", "stacked-cards"],
     flourishes: ["preloader-wordmark", "split-text-mask", "parallax-layers", "grain-overlay", "oversized-footer"]
   },
@@ -206,7 +206,7 @@ export const VARIATION_SPACE = {
     flourishes: ["marquee-ticker", "grain-overlay", "image-trail", "magnetic-buttons", "oversized-footer", "scroll-progress"]
   },
   "estate-serif": {
-    heroes: ["immersive", "split-media", "bento"],
+    heroes: ["immersive", "split-media", "bento", "dolly-zoom"],
     galleries: ["editorial-asym", "bento-grid", "stacked-cards"],
     flourishes: ["parallax-layers", "scroll-progress", "split-text-mask", "view-transition-wipe", "oversized-footer", "magnetic-buttons"]
   },
@@ -221,7 +221,7 @@ export const VARIATION_SPACE = {
     flourishes: ["scroll-progress", "view-transition-wipe", "variable-font-hover"]
   },
   "showroom-drive": {
-    heroes: ["immersive", "campaign", "split-media"],
+    heroes: ["immersive", "campaign", "split-media", "dolly-zoom"],
     galleries: ["horizontal-scroll", "bento-grid", "editorial-asym"],
     flourishes: ["scroll-progress", "custom-cursor", "marquee-ticker", "magnetic-buttons", "grain-overlay", "three-accent", "scrub-sequence"]
   }

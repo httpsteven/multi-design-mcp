@@ -23,7 +23,7 @@ export const LIBRARIES = [
     staticFriendly: true,
     what: "The animation platform behind most award-winning sites: timelines, scroll-driven scenes, pinning, scrubbing.",
     whenToUse: "Default motion engine for every premium static build. Scroll storytelling, reveals, pinned scenes.",
-    premiumNotes: "100% free since April 2025 — including ALL formerly-paid plugins. Use SplitText for masked line reveals (2025 rewrite is screen-reader accessible with built-in masking — no more manual span-wrapping), ScrambleText for decode effects, DrawSVG for line-art draw-ins, MorphSVG for shape transitions. Stop hand-rolling these.",
+    premiumNotes: "100% free since April 2025 — including ALL formerly-paid plugins. Use SplitText for masked line reveals (2025 rewrite is screen-reader accessible with built-in masking — no more manual span-wrapping), ScrambleText for decode effects, DrawSVG for line-art draw-ins, MorphSVG for shape transitions, Flip for layout animations (the Framer Motion 'layout' prop equivalent), Draggable+InertiaPlugin for gestures. Stop hand-rolling these.",
     pairsWith: ["lenis"]
   },
   {
@@ -219,6 +219,10 @@ export const RECIPES = {
   "scroll-sequence": {
     need: "Apple-AirPods-style product rotation/assembly driven by scroll",
     recipe: "Sticky section (parent 300vh, inner position:sticky 100svh) + <canvas> drawing pre-rendered frames indexed by scroll progress — no scroll hijacking, works with Lenis. Frames: ffmpeg -i product.mp4 -vf 'scale=1600:-2' -quality 80 frames/f_%04d.webp (60–120 frames, ≤4MB total), or turntable renders from Blender/Spline. Preload the first frame + nearest neighbors; draw with requestAnimationFrame throttling. prefers-reduced-motion: show one static frame. The scaffold ships this mechanic with a procedural placeholder so it demos before frames exist."
+  },
+  "framer-feel-motion": {
+    need: "The Framer Motion feel — springs, layout animation, enter/exit, gestures — with zero Framer Motion",
+    recipe: "Framer's magic decomposes into five primitives, each with a native or already-loaded equivalent: (1) SPRINGS — the design system ships --ease-spring, a real spring curve encoded as CSS linear(); use it on any transition for physics feel with zero JS (transition: transform .5s var(--ease-spring)). GSAP side: elastic.out(1, 0.55) or back.out(1.4). (2) LAYOUT ANIMATIONS (Framer's layout prop) — GSAP Flip plugin, free since the Webflow acquisition: Flip.getState(els) → reorder DOM → Flip.from(state, {duration, ease}); animates position/size changes like magic. (3) ENTER — native CSS @starting-style: define the pre-insertion state and elements animate in on mount, no JS. (4) EXIT (AnimatePresence) — native View Transitions API for DOM swaps (document.startViewTransition) + transition-behavior: allow-discrete to animate display:none. (5) GESTURES (whileHover/whileTap/drag) — :hover + :active { transform: scale(.96) } with the spring easing for tap feedback; gsap.quickTo for magnetic/follow; GSAP Draggable (also free) for real dragging with inertia. One engine, mostly platform, zero React dependency."
   },
   "micro-interactions": {
     need: "Hover states, magnetic buttons, cursor effects",

@@ -20,10 +20,13 @@ import {
   MOTION_RULES,
   COPY_RULES,
   MOBILE_RULES,
+  FORM_RULES,
+  CODE_ECONOMY,
   POLISH_CHECKLIST,
   PRIORITY_HIERARCHY,
   WORK_PHASES
 } from "./data/quality.js";
+import { HERO_VARIANTS } from "./data/layouts.js";
 import {
   composeDesignSystem,
   composeBuildPrompt,
@@ -63,6 +66,10 @@ const businessSchema = z
 const styleIdSchema = z.string().describe("Design style id from list_design_styles, e.g. 'editorial-luxury'");
 const pageTypeSchema = z.string().describe("Page type id from list_page_blueprints, e.g. 'home', 'gallery', 'pricing'");
 const stackSchema = z.enum(["static", "react"]).optional().describe("Target stack. 'static' (default): HTML/CSS/JS + GSAP, GitHub-Pages ready. 'react': exportable React/Next.");
+const heroVariantSchema = z
+  .enum(Object.keys(HERO_VARIANTS))
+  .optional()
+  .describe("Force a specific hero architecture (supersedes style default and variation), e.g. 'dolly-zoom' for the scroll push-in hero, 'kinetic-type', 'bento', 'split-form'.");
 const variationSeedSchema = z
   .number()
   .int()
@@ -157,9 +164,9 @@ server.tool(
 server.tool(
   "compose_build_prompt",
   "Generate a complete agency-grade build brief for ONE page: role framing, business context, art direction, exact design tokens, narrative section structure with copy guidance, motion spec, copywriting rules, forbidden anti-patterns, decision hierarchy, work phases, and definition of done. Feed this brief to the builder (yourself or another agent) to produce a premium page.",
-  { styleId: styleIdSchema, pageType: pageTypeSchema, business: businessSchema, stack: stackSchema, variationSeed: variationSeedSchema },
-  async ({ styleId, pageType, business, stack, variationSeed }) =>
-    text(composeBuildPrompt({ styleId, pageType, business: business || {}, stack: stack || "static", variationSeed: variationSeed || 0 }))
+  { styleId: styleIdSchema, pageType: pageTypeSchema, business: businessSchema, stack: stackSchema, variationSeed: variationSeedSchema, heroVariant: heroVariantSchema },
+  async ({ styleId, pageType, business, stack, variationSeed, heroVariant }) =>
+    text(composeBuildPrompt({ styleId, pageType, business: business || {}, stack: stack || "static", variationSeed: variationSeed || 0, heroVariant: heroVariant || null }))
 );
 
 server.tool(
@@ -194,10 +201,11 @@ server.tool(
     pageType: pageTypeSchema,
     business: businessSchema,
     includeGsap: z.boolean().optional().describe("Include GSAP/ScrollTrigger reveal script (default true)"),
-    variationSeed: variationSeedSchema
+    variationSeed: variationSeedSchema,
+    heroVariant: heroVariantSchema
   },
-  async ({ styleId, pageType, business, includeGsap, variationSeed }) =>
-    text(scaffoldPage({ styleId, pageType, business: business || {}, includeGsap: includeGsap !== false, variationSeed: variationSeed || 0 }))
+  async ({ styleId, pageType, business, includeGsap, variationSeed, heroVariant }) =>
+    text(scaffoldPage({ styleId, pageType, business: business || {}, includeGsap: includeGsap !== false, variationSeed: variationSeed || 0, heroVariant: heroVariant || null }))
 );
 
 server.tool(
@@ -345,7 +353,7 @@ server.tool(
   "Get the quality contract: forbidden anti-patterns, motion rules, copywriting rules, the full pre-ship polish checklist, decision hierarchy, and work phases. Use it as the definition of done and to audit any generated page.",
   {
     section: z
-      .enum(["all", "anti-patterns", "motion", "copy", "mobile", "polish-checklist", "priorities", "phases"])
+      .enum(["all", "anti-patterns", "motion", "copy", "mobile", "forms", "code-economy", "polish-checklist", "priorities", "phases"])
       .optional()
       .describe("Which standard to return (default all)")
   },
@@ -355,6 +363,8 @@ server.tool(
       motionRules: MOTION_RULES,
       copyRules: COPY_RULES,
       mobileRules: MOBILE_RULES,
+      formRules: FORM_RULES,
+      codeEconomy: CODE_ECONOMY,
       polishChecklist: POLISH_CHECKLIST,
       priorityHierarchy: PRIORITY_HIERARCHY,
       workPhases: WORK_PHASES
@@ -364,6 +374,8 @@ server.tool(
       motion: { motionRules: MOTION_RULES },
       copy: { copyRules: COPY_RULES },
       mobile: { mobileRules: MOBILE_RULES },
+      forms: { formRules: FORM_RULES },
+      "code-economy": { codeEconomy: CODE_ECONOMY },
       "polish-checklist": { polishChecklist: POLISH_CHECKLIST },
       priorities: { priorityHierarchy: PRIORITY_HIERARCHY },
       phases: { workPhases: WORK_PHASES }

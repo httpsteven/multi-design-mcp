@@ -6,6 +6,7 @@
 
 export const BLUEPRINTS = {
   home: {
+    ctaStrategy: "Three placements: nav CTA always visible; mid-page CTA after the strongest proof section; full emotional CTA at the bottom. One action repeated — never competing actions.",
     name: "Home / Landing",
     narrative: "Seduce, prove, invite. The visitor should feel the brand before reading a single feature.",
     sections: [
@@ -68,6 +69,7 @@ export const BLUEPRINTS = {
     ]
   },
   pricing: {
+    ctaStrategy: "Per-package inquiry CTAs (equal visual weight — the packages differentiate, not the buttons) plus one bespoke-option CTA. Quote CTA repeats at the bottom after FAQs defuse objections.",
     name: "Pricing / Packages",
     narrative: "Clarity builds trust; framing preserves premium perception.",
     sections: [
@@ -171,6 +173,7 @@ export const BLUEPRINTS = {
     ]
   },
   "landing-local-service": {
+    ctaStrategy: "Capture in the hero (form/CTA above the fold), repeat after proof-of-work, close with the full-channel CTA. Mobile: sticky Call/WhatsApp bar carries the action everywhere.",
     name: "Local Service Landing (Lead-Gen)",
     narrative: "Prove capability fast, remove risk, capture the inquiry. Built to convert local searches into quotes/appointments — repeatable per city or per service for batch generation.",
     sections: [
@@ -186,6 +189,7 @@ export const BLUEPRINTS = {
     ]
   },
   menu: {
+    ctaStrategy: "Order/reserve reachable from every scroll position: nav CTA, sticky mobile bar, and the dedicated order section. Hungry visitors do not hunt for buttons.",
     name: "Menu (Restaurant/Bar)",
     narrative: "The menu IS the marketing. Typography makes dishes desirable; ordering is never more than one tap away.",
     sections: [
@@ -198,6 +202,7 @@ export const BLUEPRINTS = {
     ]
   },
   "landing-campaign": {
+    ctaStrategy: "Offer + action complete in the first viewport; single repeat at the capture section. Campaign pages get ONE action only — no nav distractions, no secondary CTAs.",
     name: "Campaign Landing (Single Offer)",
     narrative: "One offer, one audience, one action. Built for promos, packages, and seasonal pushes — repeatable per campaign for batch generation.",
     sections: [

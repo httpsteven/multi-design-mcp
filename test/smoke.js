@@ -125,6 +125,15 @@ await check("plan_site returns per-page briefs + consistency rules", async () =>
   if (!plan.pages[2].buildPrompt.includes("packages named after rooms")) throw new Error("page notes not threaded into brief");
   if (!plan.sharedDesignSystem.cssVariables) throw new Error("no shared design system");
   if (plan.consistencyRules.length < 5) throw new Error("missing consistency rules");
+  // Ponytail economy: contract emitted ONCE; page briefs are compact deltas
+  for (const needle of ["Shared Site Contract", "Mobile Mandate", "Code Economy", "--color-bg", "Forbidden Anti-Patterns"]) {
+    if (!plan.sharedContract.includes(needle)) throw new Error(`shared contract missing '${needle}'`);
+  }
+  for (const p of plan.pages) {
+    if (!p.buildPrompt.includes("inherits the **Shared Site Contract**")) throw new Error("page brief not compact");
+    if (p.buildPrompt.includes("Mobile Mandate")) throw new Error("contract duplicated into page brief");
+    if (p.buildPrompt.length > 5000) throw new Error(`compact brief too long: ${p.buildPrompt.length} chars`);
+  }
 });
 
 await check("scaffold_page produces structured HTML: nav, hero variant, gallery, footer", async () => {
@@ -198,7 +207,8 @@ await check("bootstrap_website: one call, deterministic, full plan", async () =>
   if (a.variation.seed !== b.variation.seed) throw new Error("seed not deterministic");
   if (a.variation.seedSource !== "derived from business name (deterministic)") throw new Error("wrong seed source");
   if (a.sitePlan.pages.length !== 5) throw new Error(`default sitemap has ${a.sitePlan.pages.length} pages`);
-  if (!a.sitePlan.pages[0].buildPrompt.includes("Mobile Mandate")) throw new Error("briefs incomplete");
+  if (!a.sitePlan.sharedContract.includes("Mobile Mandate")) throw new Error("shared contract incomplete");
+  if (!a.sitePlan.pages[0].buildPrompt.includes("Page Structure")) throw new Error("page briefs incomplete");
   if (!a.workflow?.length) throw new Error("workflow missing");
   const other = parse(await client.callTool({ name: "bootstrap_website", arguments: { business: { name: "Casa Vesperalta", industry: "event venue" } } }));
   if (other.variation.seed === a.variation.seed) throw new Error("different businesses share a seed");
@@ -320,6 +330,39 @@ await check("scrub-sequence flourish scaffolds the AirPods mechanic", async () =
   }
   const stack = parse(await client.callTool({ name: "recommend_stack", arguments: { need: "scroll-sequence" } }));
   if (!stack.recipe?.recipe.includes("300vh")) throw new Error("scroll-sequence recipe missing");
+});
+
+await check("dolly-zoom hero: forced override scaffolds the push-in mechanic", async () => {
+  const out = parse(await client.callTool({ name: "scaffold_page", arguments: { styleId: "editorial-luxury", pageType: "home", business: biz, heroVariant: "dolly-zoom" } }));
+  for (const needle of ["hero--dolly", "dolly-track", "position: sticky", "transform-origin", "scale('+(1+p*1.35)", "prefers-reduced-motion"]) {
+    if (!out.html.includes(needle)) throw new Error(`dolly scaffold missing '${needle}'`);
+  }
+  if (out.composition.hero !== "dolly-zoom") throw new Error("composition not overridden");
+  const brief = await client.callTool({ name: "compose_build_prompt", arguments: { styleId: "ivory-elegance", pageType: "home", business: biz, heroVariant: "dolly-zoom" } });
+  if (!brief.content[0].text.includes("Hero Override") || !brief.content[0].text.includes("Dolly Push-In Hero")) throw new Error("brief missing hero override");
+});
+
+await check("semantic tokens: on-accent/error/ring derived and used", async () => {
+  const light = parse(await client.callTool({ name: "create_design_system", arguments: { styleId: "craftsman-trust" } }));
+  const dark = parse(await client.callTool({ name: "create_design_system", arguments: { styleId: "iron-grit" } }));
+  if (!light.cssVariables.includes("--color-error: #b3261e")) throw new Error("light style error color wrong");
+  if (!dark.cssVariables.includes("--color-error: #ff6b5e")) throw new Error("dark style error color wrong");
+  if (dark.tokens.palette.onAccent !== "#111111") throw new Error("high-vis yellow accent should get dark on-accent");
+  const scaffold = parse(await client.callTool({ name: "scaffold_page", arguments: { styleId: "craftsman-trust", pageType: "contact", business: biz } }));
+  for (const needle of [":focus-visible { outline: 2px solid var(--color-ring)", ":user-invalid", "var(--color-on-accent)"]) {
+    if (!scaffold.html.includes(needle)) throw new Error(`scaffold missing '${needle}'`);
+  }
+});
+
+await check("form rules + CTA strategy thread into briefs and quality_standards", async () => {
+  const lead = await client.callTool({ name: "compose_build_prompt", arguments: { styleId: "craftsman-trust", pageType: "landing-local-service", business: biz } });
+  const leadText = lead.content[0].text;
+  if (!leadText.includes("Form UX Rules")) throw new Error("lead-gen brief missing form rules");
+  if (!leadText.includes("CTA strategy:")) throw new Error("lead-gen brief missing CTA strategy");
+  const about = await client.callTool({ name: "compose_build_prompt", arguments: { styleId: "editorial-luxury", pageType: "about", business: biz } });
+  if (about.content[0].text.includes("Form UX Rules")) throw new Error("non-form page should not carry form rules");
+  const q = parse(await client.callTool({ name: "quality_standards", arguments: { section: "forms" } }));
+  if (!q.formRules?.some((r) => r.includes("user-invalid"))) throw new Error("forms section missing");
 });
 
 await check("prompts/list exposes premium-website", async () => {

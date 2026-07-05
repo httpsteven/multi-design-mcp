@@ -8,6 +8,8 @@ import {
   MOTION_RULES,
   COPY_RULES,
   MOBILE_RULES,
+  FORM_RULES,
+  CODE_ECONOMY,
   POLISH_CHECKLIST,
   PRIORITY_HIERARCHY,
   ROLE_FRAME,
@@ -47,9 +49,21 @@ function slugify(s) {
 
 /* Scrim gradient matched to the palette background so overridden immersive
    heroes stay legible on both dark and light styles. */
-function scrimFromBg(hex) {
+function hexRgb(hex) {
   const m = /^#?([0-9a-f]{6})$/i.exec(hex || "");
-  const [r, g, b] = m ? [0, 2, 4].map((i) => parseInt(m[1].slice(i, i + 2), 16)) : [0, 0, 0];
+  return m ? [0, 2, 4].map((i) => parseInt(m[1].slice(i, i + 2), 16)) : [0, 0, 0];
+}
+
+function luminance(hex) {
+  const [r, g, b] = hexRgb(hex).map((v) => {
+    const c = v / 255;
+    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+function scrimFromBg(hex) {
+  const [r, g, b] = hexRgb(hex);
   return `linear-gradient(to top, rgba(${r},${g},${b},0.94) 0%, rgba(${r},${g},${b},0.4) 42%, transparent 72%)`;
 }
 
@@ -134,6 +148,13 @@ export function composeDesignSystem({ styleId, brand = {} }) {
   const p = { ...style.palette };
   if (brand.accentColor) p.accent = brand.accentColor;
 
+  /* Semantic roles (schema cross-checked with ui-ux-pro-max's WCAG-adjusted
+     token system): readable text on the accent, an error color tuned to the
+     background's luminance, and a focus ring. */
+  p.onAccent = luminance(p.accent) > 0.45 ? "#111111" : "#ffffff";
+  p.error = luminance(p.background) > 0.5 ? "#b3261e" : "#ff6b5e";
+  p.ring = p.accent;
+
   const cssVars = [
     ":root {",
     `  /* ${style.name} — generated design tokens */`,
@@ -142,6 +163,9 @@ export function composeDesignSystem({ styleId, brand = {} }) {
     `  --color-text: ${p.text};`,
     `  --color-text-muted: ${p.textMuted};`,
     `  --color-accent: ${p.accent};`,
+    `  --color-on-accent: ${p.onAccent};`,
+    `  --color-error: ${p.error};`,
+    `  --color-ring: ${p.ring};`,
     `  --color-line: ${p.line};`,
     `  --font-display: '${style.typography.display.family}', ${style.typography.display.fallback};`,
     `  --font-body: '${style.typography.body.family}', ${style.typography.body.fallback};`,
@@ -219,7 +243,8 @@ function brandBlock(business = {}) {
   return lines.length ? lines.join("\n") : "- (No business details provided — request them or mark unknowns as [TO CONFIRM]. Do not invent critical facts.)";
 }
 
-export function composeBuildPrompt({ styleId, pageType = "home", business = {}, stack = "static", variationSeed = 0 }) {
+export function composeBuildPrompt({ styleId, pageType = "home", business = {}, stack = "static", variationSeed = 0, heroVariant = null, compact = false, pageNotes = null }) {
+  if (heroVariant && !HERO_VARIANTS[heroVariant]) throw new Error(`Unknown heroVariant "${heroVariant}". Options: ${Object.keys(HERO_VARIANTS).join(", ")}`);
   const style = getStyle(styleId);
   if (!style) throw new Error(`Unknown style "${styleId}".`);
   const blueprint = getBlueprint(pageType);
@@ -239,9 +264,39 @@ export function composeBuildPrompt({ styleId, pageType = "home", business = {}, 
 
   const lang = languageSpec(business);
 
+  const pagePart = `## Page Structure (narrative: ${blueprint.narrative})
+${blueprint.ctaStrategy ? `CTA strategy: ${blueprint.ctaStrategy}\n` : ""}${sections}
+
+Map each section to a layout from the composition spec: gallery-type sections use the gallery pattern; storytelling sections may use the sticky/band layouts; list-like content uses the index list; rotate the content layouts so no two adjacent sections share a layout. You may improve this structure only if you find a superior narrative — never to save effort.
+${heroVariant ? `
+## Hero Override (forced by caller — supersedes the composition and variation hero)
+**${HERO_VARIANTS[heroVariant].name}:** ${HERO_VARIANTS[heroVariant].description}
+` : ""}${blueprint.sections.some((s) => ["form", "capture", "order"].includes(s.id)) || blueprint.name.includes("Lead-Gen") ? `
+## Form UX Rules (this page captures leads — these decide whether it converts)
+${FORM_RULES.map((r) => `- ${r}`).join("\n")}
+Design tokens provide --color-error, --color-on-accent, and --color-ring for error states, CTA contrast, and focus rings.
+` : ""}${pageNotes ? `\nPage-specific notes: ${pageNotes}\n` : ""}`;
+
+  if (compact) {
+    return `# Page Brief — ${blueprint.name} · ${style.name}
+
+This page inherits the **Shared Site Contract** (emitted once at plan level) — apply ALL of it: tokens, composition, variation, motion, stack, mobile mandate, copywriting, code economy, anti-patterns, and definition of done. Below is only what is specific to this page.
+
+${pagePart}`;
+  }
+
   return `# Build Brief — ${blueprint.name} · ${style.name}
 
-${ROLE_FRAME}
+${contractBody({ style, styleId, ds, business, stack, stackNote, lang, variation, blueprint })}
+
+${pagePart}`;
+}
+
+/* The shared, page-agnostic contract. Emitted once per site plan (token
+   economy: a 5-page plan repeats none of this), or inlined in single-page
+   full briefs. */
+function contractBody({ style, styleId, ds, business, stack, stackNote, lang, variation, blueprint }) {
+  return `${ROLE_FRAME}
 
 ${stackNote}
 
@@ -260,7 +315,7 @@ ${style.summary}
 - Palette logic: ${ds.paletteNotes}
 
 ## Layout & Composition (mandatory structure)
-This defines what the page physically IS — hero architecture, image placement, section layouts. Deviate only for a demonstrably superior composition, never to simplify.
+This defines what pages physically ARE — hero architecture, image placement, section layouts. Deviate only for a demonstrably superior composition, never to simplify.
 
 ${describeComposition(styleId)}
 ${variationDirective(variation)}
@@ -269,11 +324,6 @@ ${variationDirective(variation)}
 ${ds.cssVariables}
 \`\`\`
 Font import: ${ds.fontImport}
-
-## Page Structure (narrative: ${blueprint.narrative})
-${sections}
-
-Map each section to a layout from the composition spec above: gallery-type sections use the gallery pattern; storytelling sections may use the sticky/band layouts; list-like content uses the index list; rotate the content layouts so no two adjacent sections share a layout. You may improve this structure only if you find a superior narrative — never to save effort.
 
 ## Motion Specification
 Character: ${style.motion.character}
@@ -290,6 +340,9 @@ ${MOBILE_RULES.map((r) => `- ${r}`).join("\n")}
 ## Copywriting Rules
 ${COPY_RULES.map((r) => `- ${r}`).join("\n")}
 
+## Code Economy (Ponytail / YAGNI — write LESS code)
+${CODE_ECONOMY.map((r) => `- ${r}`).join("\n")}
+
 ## Forbidden Anti-Patterns (hard constraints)
 ${ANTI_PATTERNS.map((a) => `- [${a.severity}] ${a.rule}`).join("\n")}
 
@@ -301,8 +354,24 @@ ${WORK_PHASES.map((w) => `**Phase ${w.phase} — ${w.name}:** ${w.tasks.join("; 
 
 ## Definition of Done
 Run the polish checklist before declaring the page finished:
-${POLISH_CHECKLIST.map((c) => `- **${c.area}:** ${c.checks.join("; ")}`).join("\n")}
-`;
+${POLISH_CHECKLIST.map((c) => `- **${c.area}:** ${c.checks.join("; ")}`).join("\n")}`;
+}
+
+/* Standalone shared contract for multi-page plans. */
+export function composeSiteContract({ styleId, business = {}, stack = "static", variationSeed = 0 }) {
+  const style = getStyle(styleId);
+  if (!style) throw new Error(`Unknown style "${styleId}".`);
+  const ds = composeDesignSystem({ styleId, brand: business });
+  const lang = languageSpec(business);
+  const variation = buildVariation(styleId, variationSeed);
+  const stackNote =
+    stack === "react"
+      ? "Stack: exportable React/Next.js (static export compatible) + GSAP/Motion where it genuinely helps. Follow React best practices; do not add SSR-dependent features."
+      : "Stack: premium static HTML/CSS/JS + GSAP + ScrollTrigger. No build step required; deployable to GitHub Pages or any static host as-is.";
+  return `# Shared Site Contract — ${style.name} · ${business.name || "(unnamed)"}
+Applies to EVERY page in this plan. Page briefs contain only page-specific structure.
+
+${contractBody({ style, styleId, ds, business, stack, stackNote, lang, variation, blueprint: getBlueprint("home") })}`;
 }
 
 /* --------------------------------- site plan ---------------------------------- */
@@ -326,7 +395,7 @@ export function composeSitePlan({ styleId, business = {}, pages, stack = "static
       narrative: bp.narrative,
       sections: bp.sections.map((s) => s.name),
       notes: pg.notes || null,
-      buildPrompt: composeBuildPrompt({ styleId, pageType: pg.pageType, business: { ...business, notes: [business.notes, pg.notes].filter(Boolean).join(" | ") || undefined }, stack, variationSeed })
+      buildPrompt: composeBuildPrompt({ styleId, pageType: pg.pageType, business, stack, variationSeed, compact: true, pageNotes: pg.notes || null })
     };
   });
 
@@ -343,6 +412,7 @@ export function composeSitePlan({ styleId, business = {}, pages, stack = "static
         ? "default composition"
         : `hero=${siteVariation.hero}, gallery=${siteVariation.gallery}, flourishes=[${siteVariation.flourishes.map((f) => f.id).join(", ")}] — applied site-wide for consistency`
     },
+    sharedContract: composeSiteContract({ styleId, business, stack, variationSeed }),
     sharedDesignSystem: ds,
     consistencyRules: [
       "All pages import the identical token block (cssVariables) — no per-page palette drift.",
@@ -371,13 +441,23 @@ const FAQ_IDS = new Set(["faq", "groups"]);
 const CTA_IDS = new Set(["cta", "join", "next", "order"]);
 const FORM_IDS = new Set(["form", "capture"]);
 
-export function scaffoldPage({ styleId, pageType = "home", business = {}, includeGsap = true, variationSeed = 0, siteNav = null, slug = null }) {
+export function scaffoldPage({ styleId, pageType = "home", business = {}, includeGsap = true, variationSeed = 0, siteNav = null, slug = null, heroVariant = null }) {
   const style = getStyle(styleId);
   if (!style) throw new Error(`Unknown style "${styleId}".`);
   const blueprint = getBlueprint(pageType);
   if (!blueprint) throw new Error(`Unknown pageType "${pageType}".`);
   const variation = buildVariation(styleId, variationSeed);
   const comp = effectiveComposition(styleId, style, variation);
+  if (heroVariant) {
+    if (!HERO_VARIANTS[heroVariant]) throw new Error(`Unknown heroVariant "${heroVariant}". Options: ${Object.keys(HERO_VARIANTS).join(", ")}`);
+    comp.hero = {
+      variant: heroVariant,
+      scrim: comp.hero.scrim || scrimFromBg(style.palette.background),
+      heroPanel: comp.hero.heroPanel,
+      contentPosition: comp.hero.contentPosition || "bottom-left",
+      notes: `${HERO_VARIANTS[heroVariant].name} (forced override). ${HERO_VARIANTS[heroVariant].description}`
+    };
+  }
   const flourishIds = new Set(variation.flourishes.map((f) => f.id));
   const useLenis = includeGsap && !NATIVE_SCROLL_STYLES.has(styleId);
 
@@ -452,6 +532,22 @@ export function scaffoldPage({ styleId, pageType = "home", business = {}, includ
         <p class="trust-markers" data-reveal>[trust marker] · [trust marker] · [trust marker]</p>
       </div>
       ${media("hero image — 4:5, treated per style", 800, 1000, mask)}
+    </header>`;
+    }
+    if (v === "dolly-zoom") {
+      return `    <!-- Hero (dolly-zoom): ${comp.hero.notes}
+         Choose an image with real depth (corridor, doorway, road); set transform-origin at the focal point. -->
+    <header class="hero hero--dolly" id="top">
+      <div class="dolly-track">
+        <div class="dolly-pin">
+          ${media("depth image — the scene you walk into (corridor/doorway/road)", 1600, 1000, "hero-media dolly-media")}
+          <div class="hero-scrim" aria-hidden="true"></div>
+          <div class="hero-content hero-content--${comp.hero.contentPosition || "bottom-left"}" data-reveal-group>
+        ${heroContent}
+          </div>
+          <span class="scroll-cue" aria-hidden="true">&darr;</span>
+        </div>
+      </div>
     </header>`;
     }
     if (v === "campaign") {
@@ -924,6 +1020,14 @@ if(reduced){draw(0.35);return;}var tick=false;function onScroll(){if(tick)return
     .b-tall { grid-column: span 2; grid-row: span 2; } .b-wide { grid-column: span 3; } .b-stat { grid-column: span 2; padding: var(--space-md); display: flex; flex-direction: column; justify-content: center; } .b-small { grid-column: span 1; }
     .bento-cell img { width: 100%; height: 100%; object-fit: cover; }
     .stat-num { font-family: var(--font-display); font-size: var(--size-h2); } .stat-label { color: var(--color-text-muted); font-size: var(--size-small); }`,
+    "dolly-zoom": `.hero--dolly { position: relative; }
+    .dolly-track { height: 220vh; }
+    .dolly-pin { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+    .dolly-media { position: absolute; inset: 0; margin: 0; }
+    .dolly-media img { width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 42%; /* aim at the focal point */ will-change: transform; }
+    .hero-scrim { position: absolute; inset: 0; background: ${comp.hero.scrim || "linear-gradient(to top, rgba(0,0,0,.8), transparent 70%)"}; pointer-events: none; }
+    .hero--dolly .hero-content { position: absolute; z-index: 1; left: 0; bottom: 0; padding: var(--space-lg) var(--gutter); max-width: 44rem; }
+    .hero--dolly .scroll-cue { position: absolute; bottom: var(--space-sm); left: 50%; z-index: 1; color: var(--color-text-muted); }`,
     collage: `.hero--collage { position: relative; min-height: 100svh; padding: calc(var(--space-lg) + 3rem) var(--gutter) var(--space-lg); }
     .collage { position: relative; height: 68vh; }
     .c-img { position: absolute; margin: 0; box-shadow: 0 20px 60px rgba(0,0,0,.18); }
@@ -985,8 +1089,9 @@ ${ds.cssVariables.split("\n").map((l) => "    " + l).join("\n")}
     .hero-title { max-width: 14ch; }
     .hero-sub { max-width: 44ch; color: var(--color-text-muted); margin-top: var(--space-sm); }
     .cta { display: inline-block; margin-top: var(--space-md); padding: .9em 2.2em; border: 1px solid var(--color-accent); color: var(--color-accent); text-decoration: none; font-size: var(--size-small); letter-spacing: .15em; text-transform: uppercase; transition: background .3s var(--ease-brand), color .3s var(--ease-brand); }
-    .cta:hover, .cta:focus-visible { background: var(--color-accent); color: var(--color-bg); }
-    button.cta { font-family: inherit; cursor: pointer; background: var(--color-accent); color: var(--color-bg); border: none; }
+    .cta:hover, .cta:focus-visible { background: var(--color-accent); color: var(--color-on-accent); }
+    button.cta { font-family: inherit; cursor: pointer; background: var(--color-accent); color: var(--color-on-accent); border: none; }
+    :focus-visible { outline: 2px solid var(--color-ring); outline-offset: 3px; }
     .section { padding: var(--space-section) var(--gutter); border-top: 1px solid var(--color-line); }
     .section-body { max-width: var(--measure); margin-top: var(--space-md); }
 
@@ -1018,7 +1123,10 @@ ${ds.cssVariables.split("\n").map((l) => "    " + l).join("\n")}
     .cta-band { text-align: center; max-width: 44rem; margin: 0 auto; }
     label { display: grid; gap: .35rem; font-size: var(--size-small); }
     /* 16px floor prevents iOS auto-zoom on focus */
-    input, select, textarea { font: inherit; font-size: max(16px, 1em); color: inherit; background: transparent; border: 1px solid var(--color-line); padding: .8em; width: 100%; }
+    input, select, textarea { font: inherit; font-size: max(16px, 1em); color: inherit; background: transparent; border: 1px solid var(--color-line); padding: .8em; width: 100%; min-height: 44px; }
+    /* Validate on blur, not keystroke: :user-invalid fires only after interaction */
+    input:user-invalid, select:user-invalid, textarea:user-invalid { border-color: var(--color-error); }
+    .field-error { color: var(--color-error); font-size: var(--size-small); margin-top: .35rem; }
     .inquiry-form { display: grid; gap: var(--space-sm); }
 
     /* Nav */
@@ -1108,6 +1216,7 @@ ${flourishCss}${seqCss}
       .hero-content--collage { margin-top: 0; }
       .margin-caption { display: none; }
       .stack-panel img { height: 40vh; }
+      .dolly-track { height: 170vh; }
     }
 
     /* TODO(build): scaffold gives the structural skeleton — apply the style's
@@ -1160,7 +1269,7 @@ ${includeGsap ? `  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.mi
     } else {
       document.querySelectorAll('[data-reveal]').forEach((el) => { el.style.opacity = 1; el.style.visibility = 'visible'; });
     }
-  </script>` : ""}${seqJs}${progressJs}${flourishTodo}
+  </script>` : ""}${comp.hero.variant === "dolly-zoom" ? `\n  <script>(function(){var track=document.querySelector('.dolly-track'),img=document.querySelector('.dolly-media img'),content=document.querySelector('.hero--dolly .hero-content');if(!track||!img)return;if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;var tick=false;function update(){tick=false;var r=track.getBoundingClientRect();var p=Math.min(1,Math.max(0,-r.top/(r.height-innerHeight)));img.style.transform='scale('+(1+p*1.35)+')';if(content){content.style.opacity=String(Math.max(0,1-p*1.6));content.style.transform='translateY('+(-p*40)+'px)';}}addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(update);}},{passive:true});update();})();</script>` : ""}${seqJs}${progressJs}${flourishTodo}
 </body>
 </html>
 `;

@@ -48,7 +48,8 @@ export const POLISH_CHECKLIST = [
   { area: "Motion", checks: ["All animations use the style's easing/duration spec", "No jank: transform/opacity only, tested at 60fps", "Reveals trigger at natural scroll positions (no popping late/early)", "No animation replays annoyingly on scroll-up unless intentional"] },
   { area: "Copy", checks: ["Competitor swap test passed on every headline", "No forbidden generic phrases anywhere", "Consistent voice across all pages", "All facts real or marked [TO CONFIRM]"] },
   { area: "Performance", checks: ["Images: modern formats (webp/avif), responsive srcset, lazy-loaded below fold", "Fonts: preconnect + display=swap, subsets only", "LCP < 2.5s on 4G mid-range device", "No layout shift (CLS < 0.1) — dimensions on all media", "Total JS kept minimal; GSAP loaded once, no unused plugins"] },
-  { area: "Template-Trace Removal", checks: ["No default library styles visible (button resets, focus rings)", "No placeholder text or lorem ipsum anywhere", "Favicon, og-image, meta description all real", "404 or dead links checked", "No console errors"] }
+  { area: "Template-Trace Removal", checks: ["No default library styles visible (button resets, focus rings)", "No placeholder text or lorem ipsum anywhere", "Favicon, og-image, meta description all real", "404 or dead links checked", "No console errors"] },
+  { area: "Code Economy", checks: ["Zero unused CSS rules, keyframes, or JS functions in shipped files", "No abstraction with a single call site", "No dependency that a native feature or loaded library already covers", "No commented-out code or console.log", "Page weight sanity: HTML+CSS+JS (excluding media) under ~120KB for a static page"] }
 ];
 
 export const MOBILE_RULES = [
@@ -64,6 +65,40 @@ export const MOBILE_RULES = [
   "Galleries on touch: horizontal strips become native swipe with scroll-snap; hover zooms become tap-to-lightbox.",
   "Performance is mobile UX: heavy flourishes (WebGL, image trails, parallax stacks) are reduced or skipped on mobile; LCP budget holds on mid-range 4G hardware.",
   "Sticky/pinned scroll scenes must be re-tested on touch — if a pin fights momentum scrolling, replace it with a simple stacked layout on mobile."
+];
+
+/* Form & feedback rules — cross-checked with ui-ux-pro-max's UX catalog
+   (Apple HIG / Material / WCAG-sourced). Forms are where local-business
+   sites win or lose the lead, so these are non-negotiable. */
+export const FORM_RULES = [
+  "Every input has a visible label — never placeholder-only (placeholders vanish on focus and fail screen readers).",
+  "Semantic input types always: type=email, type=tel, inputmode=numeric — they summon the right mobile keyboard.",
+  "Autofill enabled: autocomplete attributes (name, email, tel) so the browser fills the form in one tap.",
+  "Validate on blur, not on keystroke; show the error only after the user finishes the field (:user-invalid, not :invalid).",
+  "Errors appear directly below the offending field, in the error color plus text (never color alone), with role='alert'/aria-live so screen readers announce them.",
+  "Error messages state cause AND fix ('Enter a 10-digit phone number'), never just 'Invalid input'.",
+  "On failed submit: focus jumps to the first invalid field.",
+  "Submit buttons show a working state during async sends and a clear success confirmation after — with the promised response time restated.",
+  "Ask for the minimum: every extra field costs conversions; 3–5 fields max on lead-gen forms.",
+  "Required fields marked; optional fields labeled '(optional)' — whichever set is smaller.",
+  "Inputs ≥44px tall, 16px+ font (no iOS zoom), grouped logically with whitespace, one column on mobile.",
+  "Multi-step forms show progress and allow going back without losing data."
+];
+
+/* Code economy — Ponytail's six-rung YAGNI ladder adapted to premium static
+   web builds. Premium perception comes from design decisions, never from
+   code volume; bloat is where AI-built sites rot. */
+export const CODE_ECONOMY = [
+  "Decision ladder — stop at the FIRST rung that solves it: (1) Does this need to exist at all? If not, skip it. (2) Native HTML solves it? Use it (<details> accordions, <dialog>, form validation attributes, loading=lazy). (3) Native CSS solves it? Use it (scroll-snap, :user-invalid, aspect-ratio, scroll-driven animations, sticky). (4) An already-loaded library solves it? Use it (GSAP is loaded — never hand-roll tweens beside it). (5) A few lines of vanilla JS solve it? Write exactly those. (6) Only then consider anything more.",
+  "No new dependencies beyond the stack recipes. Every additional script must justify itself against rungs 2–5 first.",
+  "No abstraction used once: no helper functions, CSS utility classes, or components with a single call site. Inline it; extract on the second use.",
+  "Reuse the scaffold's classes and tokens — extending .section/.grid-12/.media beats inventing parallel systems.",
+  "No wrapper divs without a job. Every element earns its place; styling hooks go on the semantic element.",
+  "No configuration, options, or 'flexibility' for needs that don't exist yet. Build for this client's actual content.",
+  "No JS state for what CSS states express (:hover, :focus-visible, :checked, :target, @media).",
+  "Delete, don't comment out. No dead CSS, unused keyframes, or leftover console.log in shipped pages.",
+  "One motion engine, one icon approach, one font pipeline per site — duplicated systems are bloat with a build step.",
+  "Less code IS the premium finish: a 40KB page that feels expensive beats a 400KB page that explains itself."
 ];
 
 export const PRIORITY_HIERARCHY = [

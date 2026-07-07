@@ -32,7 +32,8 @@ import {
   composeBuildPrompt,
   composeSitePlan,
   scaffoldPage,
-  scaffoldSite
+  scaffoldSite,
+  scaffoldProject
 } from "./generators.js";
 import { buildVariation, VARIATION_SPACE, FLOURISHES } from "./data/variations.js";
 import { getTrends } from "./data/trends.js";
@@ -232,6 +233,29 @@ server.tool(
 );
 
 server.tool(
+  "scaffold_project",
+  "Generate a COMPLETE Vite Node project (not loose HTML): the linked HTML pages PLUS package.json, vite.config.js (multi-page, base './'), .gitignore, .github/workflows/deploy.yml, src/js/config.js, and README — as a file manifest ready to write to disk and `npm install`. This is the deliverable format: an installable, buildable, GitHub-Pages-deployable project matching the studio convention (Vite is the only dependency; output stays plain static). Prefer this over scaffold_site when producing a real project to hand off.",
+  {
+    styleId: styleIdSchema,
+    business: businessSchema,
+    pages: z
+      .array(
+        z.object({
+          pageType: pageTypeSchema,
+          title: z.string().optional().describe("Nav label override"),
+          slug: z.string().optional().describe("Output filename (without .html); required when a pageType repeats")
+        })
+      )
+      .min(1)
+      .describe("Pages in nav order; first is usually home"),
+    variationSeed: variationSeedSchema,
+    includeGsap: z.boolean().optional()
+  },
+  async ({ styleId, business, pages, variationSeed, includeGsap }) =>
+    text(scaffoldProject({ styleId, business: business || {}, pages, variationSeed: variationSeed || 0, includeGsap: includeGsap !== false }))
+);
+
+server.tool(
   "generate_variations",
   "Preview N distinct variations of a style before building: each seed deterministically combines an alternate hero architecture, gallery pattern, shuffled layout rotation, and 2-3 signature flourishes (grain, marquee, custom cursor, pinned scenes, WebGL accent...). Pick a seed, then pass it as variationSeed to compose_build_prompt / plan_site / scaffold_page. This is how sibling sites in the same style get different bones.",
   {
@@ -331,7 +355,7 @@ server.tool(
   "Curated modern library intelligence (verified July 2026) for premium static-first sites: GSAP (100% free since April 2025 INCLUDING SplitText/ScrambleText/DrawSVG/MorphSVG), Lenis momentum scroll, Motion, anime.js v4, OGL/Three.js, PhotoSwipe, Embla, View Transitions API, Alpine, Astro for batch static generation, and more — each with when-to-use and premium-restraint notes. Optionally pass a need to get the exact recipe (e.g. 'text-reveals', 'static-forms', 'batch-page-generation').",
   {
     need: z
-      .enum(["premium-motion-core", "text-reveals", "page-transitions", "gallery-lightbox", "webgl-accent", "scroll-sequence", "static-forms", "batch-page-generation", "micro-interactions", "bilingual-toggle"])
+      .enum(["premium-motion-core", "text-reveals", "page-transitions", "gallery-lightbox", "webgl-accent", "scroll-sequence", "framer-feel-motion", "static-forms", "batch-page-generation", "micro-interactions", "bilingual-toggle"])
       .optional()
       .describe("A specific need — returns that recipe plus the full catalog context")
   },

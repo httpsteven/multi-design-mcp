@@ -27,7 +27,8 @@ export const MOTION_RULES = [
   "Sequence with stagger and overlap; simultaneous everything reads as cheap.",
   "Hover states are crafted (0.2–0.4s) and never rely on color alone.",
   "60fps or it doesn't ship: test on mid-range hardware, use will-change sparingly.",
-  "Scroll-linked (scrub) animations must feel physically attached to scroll position, never laggy or 'floaty'."
+  "Scroll-linked (scrub) animations must feel physically attached to scroll position, never laggy or 'floaty'.",
+  "Framer-feel without Framer: springs via the --ease-spring token (CSS linear()); layout animations via GSAP Flip (free); enter via @starting-style; exit via View Transitions + allow-discrete; tap feedback via :active scale with the spring easing. Never add Framer Motion to a static site — see the framer-feel-motion recipe."
 ];
 
 export const COPY_RULES = [

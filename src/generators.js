@@ -175,6 +175,8 @@ export function composeDesignSystem({ styleId, brand = {} }) {
     `  --size-body: ${style.typography.scale.body};`,
     `  --size-small: ${style.typography.scale.small};`,
     `  --ease-brand: ${style.motion.easing};`,
+    `  /* Real spring physics as pure CSS (Framer-feel, zero JS): a spring curve encoded via linear() */`,
+    `  --ease-spring: linear(0, 0.008 1.1%, 0.031 2.2%, 0.129 4.8%, 0.257 7.2%, 0.671 14.2%, 0.789 16.5%, 0.881 18.6%, 0.957 20.7%, 1.019 22.9%, 1.063 25.1%, 1.094 27.4%, 1.109 30%, 1.104 33%, 1.072 38.7%, 1.03 44.1%, 0.99 51%, 0.977 57.1%, 0.988 69.8%, 1);`,
     ...Object.entries(SPACING_SCALE).map(([k, v]) => `  --${k}: ${v};`),
     "}"
   ].join("\n");
@@ -260,7 +262,7 @@ export function composeBuildPrompt({ styleId, pageType = "home", business = {}, 
   const stackNote =
     stack === "react"
       ? "Stack: exportable React/Next.js (static export compatible) + GSAP/Motion where it genuinely helps. Follow React best practices; do not add SSR-dependent features."
-      : "Stack: premium static HTML/CSS/JS + GSAP + ScrollTrigger. No build step required; deployable to GitHub Pages or any static host as-is.";
+      : "Stack: a real Vite Node project (not loose HTML) — premium static HTML/CSS/JS + GSAP + ScrollTrigger, Vite as the only dev/build dependency, GitHub Pages deploy workflow. Scaffold it with the scaffold_project tool, then build on those bones.";
 
   const lang = languageSpec(business);
 
@@ -299,6 +301,13 @@ function contractBody({ style, styleId, ds, business, stack, stackNote, lang, va
   return `${ROLE_FRAME}
 
 ${stackNote}
+
+## Project Structure Mandate (non-negotiable)
+Deliver a proper Node project, never a folder of loose .html files:
+- Scaffold it with the \`scaffold_project\` tool (or replicate its output): package.json, vite.config.js (multi-page inputs, base "./"), .gitignore, .github/workflows/deploy.yml, src/js/config.js, README.
+- Vite is the ONLY dependency — dev/build/preview only; the output stays plain static (no framework, no runtime deps) so it deploys to GitHub Pages unchanged.
+- All contact details live in src/js/config.js (phone, WhatsApp, email, map, hours) — one edit point, matching the studio convention.
+- Must run clean: \`npm install\` → \`npm run dev\` → \`npm run build\`. Verify the build before delivery.
 
 ## Business Context
 ${brandBlock(business)}
@@ -367,7 +376,7 @@ export function composeSiteContract({ styleId, business = {}, stack = "static", 
   const stackNote =
     stack === "react"
       ? "Stack: exportable React/Next.js (static export compatible) + GSAP/Motion where it genuinely helps. Follow React best practices; do not add SSR-dependent features."
-      : "Stack: premium static HTML/CSS/JS + GSAP + ScrollTrigger. No build step required; deployable to GitHub Pages or any static host as-is.";
+      : "Stack: a real Vite Node project (not loose HTML) — premium static HTML/CSS/JS + GSAP + ScrollTrigger, Vite as the only dev/build dependency, GitHub Pages deploy workflow. Scaffold it with the scaffold_project tool, then build on those bones.";
   return `# Shared Site Contract — ${style.name} · ${business.name || "(unnamed)"}
 Applies to EVERY page in this plan. Page briefs contain only page-specific structure.
 
@@ -1090,6 +1099,9 @@ ${ds.cssVariables.split("\n").map((l) => "    " + l).join("\n")}
     .hero-sub { max-width: 44ch; color: var(--color-text-muted); margin-top: var(--space-sm); }
     .cta { display: inline-block; margin-top: var(--space-md); padding: .9em 2.2em; border: 1px solid var(--color-accent); color: var(--color-accent); text-decoration: none; font-size: var(--size-small); letter-spacing: .15em; text-transform: uppercase; transition: background .3s var(--ease-brand), color .3s var(--ease-brand); }
     .cta:hover, .cta:focus-visible { background: var(--color-accent); color: var(--color-on-accent); }
+    /* Tap feedback with spring physics — Framer whileTap, zero JS */
+    .cta:active, .mcb-btn:active { transform: scale(.96); }
+    .cta, .mcb-btn { transition: background .3s var(--ease-brand), color .3s var(--ease-brand), transform .5s var(--ease-spring); }
     button.cta { font-family: inherit; cursor: pointer; background: var(--color-accent); color: var(--color-on-accent); border: none; }
     :focus-visible { outline: 2px solid var(--color-ring); outline-offset: 3px; }
     .section { padding: var(--space-section) var(--gutter); border-top: 1px solid var(--color-line); }
@@ -1259,11 +1271,12 @@ ${includeGsap ? `  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.mi
         gsap.fromTo(items,
           { autoAlpha: 0, y: 28 },
           { autoAlpha: 1, y: 0, duration: 1.0, ease: 'expo.out', /* tune to brand easing: ${style.motion.easing} */ stagger: 0.12,
+            clearProps: 'transform', /* leftover inline transforms would block CSS :active/:hover transforms */
             scrollTrigger: { trigger: group, start: 'top 78%' } }
         );
       });
       document.querySelectorAll('[data-reveal]:not([data-reveal-group] [data-reveal])').forEach((el) => {
-        gsap.fromTo(el, { autoAlpha: 0, y: 28 }, { autoAlpha: 1, y: 0, duration: 1.0, ease: 'expo.out',
+        gsap.fromTo(el, { autoAlpha: 0, y: 28 }, { autoAlpha: 1, y: 0, duration: 1.0, ease: 'expo.out', clearProps: 'transform',
           scrollTrigger: { trigger: el, start: 'top 82%' } });
       });
     } else {
@@ -1304,6 +1317,192 @@ ${includeGsap ? `  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.mi
 /* ------------------------------- site scaffold --------------------------------
    Emits a complete linked multi-page site: every page shares identical tokens,
    nav (real hrefs + aria-current), and footer; interior pages get reduced heroes. */
+
+/* Vite project scaffolding — matches the real portfolio convention
+   (alpha-omega-glass / salon_mirador): static site, Vite as the only
+   dev/build dependency, GitHub Pages deploy workflow, one config file
+   for contact details. Deliverable is a Node project, not loose HTML. */
+function projectFiles({ business = {}, htmlFiles = ["index.html"], useLenis = true, bilingual = false }) {
+  const slug = slugify(business.name);
+  const name = business.name || "Website";
+
+  const inputs = htmlFiles
+    .map((f) => `      ${JSON.stringify(f.replace(/\.html$/, "") || "main")}: resolve(import.meta.dirname, ${JSON.stringify(f)})`)
+    .join(",\n");
+
+  const pkg = {
+    name: slug,
+    private: true,
+    version: "1.0.0",
+    type: "module",
+    scripts: {
+      dev: "vite",
+      build: "vite build",
+      preview: "vite preview"
+    },
+    devDependencies: { vite: "^6.0.0" }
+  };
+
+  const files = [
+    { path: "package.json", content: JSON.stringify(pkg, null, 2) + "\n" },
+    {
+      path: "vite.config.js",
+      content: `import { resolve } from "node:path";
+import { defineConfig } from "vite";
+
+// base: "./" keeps asset URLs relative so the build works on GitHub Pages
+// project URLs (user.github.io/repo/) with zero config.
+export default defineConfig({
+  base: "./",
+  build: {
+    rollupOptions: {
+      input: {
+${inputs}
+      }
+    }
+  }
+});
+`
+    },
+    {
+      path: ".gitignore",
+      content: "node_modules\ndist\n.DS_Store\n*.log\n"
+    },
+    {
+      path: ".github/workflows/deploy.yml",
+      content: `name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: \${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+`
+    },
+    {
+      path: "src/js/config.js",
+      content: `// Single source of truth for contact details. Wire these into the
+// page during the finish pass (buttons, links, WhatsApp, map).
+// REEMPLAZAR every value with the client's real data.
+export const CONFIG = {
+  phone: "+10000000000",                 // tel: links
+  whatsapp: "10000000000",               // https://wa.me/<number>
+  email: "hello@example.com",            // mailto:
+  instagram: "https://instagram.com/",   // social
+  maps: "https://maps.google.com/",      // directions
+  address: "[street, city]",
+  hours: "[Mon–Fri 9–18]"${bilingual ? `,
+  // Bilingual site: keep all display strings in an I18N object and toggle
+  // via localStorage + data-i18n attributes (see README).` : ""}
+};
+`
+    },
+    {
+      path: "README.md",
+      content: `# ${name}
+
+Premium static website built with [Vite](https://vitejs.dev). No framework, no
+runtime dependencies — Vite is dev/build only, output is plain static files.
+
+## Develop
+
+\`\`\`bash
+npm install       # once
+npm run dev       # http://localhost:5173
+\`\`\`
+
+## Build & preview
+
+\`\`\`bash
+npm run build     # → dist/ (fully static)
+npm run preview   # serve the production build locally
+\`\`\`
+
+## Deploy
+
+Pushing to \`main\` triggers \`.github/workflows/deploy.yml\`, which builds and
+publishes \`dist/\` to GitHub Pages. In the repo: **Settings → Pages → Source:
+GitHub Actions** (once).
+
+## Edit content
+
+- **Contact details:** \`src/js/config.js\` — one place for phone, WhatsApp, email, map, hours.
+- **Copy & images:** search the HTML for \`[bracketed placeholders]\` and \`REEMPLAZAR\` comments.
+${bilingual ? "- **Translations:** the `I18N` object holds every string in both languages — edit both together.\n" : ""}
+## Structure
+
+\`\`\`
+${htmlFiles.map((f) => `${f}${f === "index.html" ? "        # home" : ""}`).join("\n")}
+src/js/config.js  # contact details
+vite.config.js
+.github/workflows/deploy.yml
+\`\`\`
+`
+    }
+  ];
+  return files;
+}
+
+/* Full Node project: the generated pages PLUS the Vite scaffolding, as a
+   single file manifest ready to write to disk and `npm install`. */
+export function scaffoldProject({ styleId, business = {}, pages, variationSeed = 0, includeGsap = true }) {
+  const site = scaffoldSite({ styleId, business, pages, variationSeed, includeGsap });
+  const lang = languageSpec(business);
+  const useLenis = includeGsap && !NATIVE_SCROLL_STYLES.has(styleId);
+  const htmlFiles = site.files.map((f) => f.file);
+
+  const manifest = [
+    ...site.files.map((f) => ({ path: f.file, content: f.html })),
+    ...projectFiles({ business, htmlFiles, useLenis, bilingual: lang.bilingual })
+  ];
+
+  return {
+    project: {
+      ...site.site,
+      type: "Vite static site (Node project)",
+      fileCount: manifest.length,
+      install: "npm install",
+      dev: "npm run dev",
+      deploy: "push to main → GitHub Pages (workflow included)"
+    },
+    setup: [
+      "Write every file at its `path` (create directories as needed).",
+      "Run `npm install` — installs Vite (the only dependency).",
+      "Run `npm run dev` and craft each page to its build brief on top of these bones.",
+      "Centralize contact details in src/js/config.js; replace all [placeholders] and REEMPLAZAR markers.",
+      "`npm run build` → dist/, then push to main to deploy."
+    ],
+    consistency: site.consistency,
+    files: manifest
+  };
+}
 
 export function scaffoldSite({ styleId, business = {}, pages, variationSeed = 0, includeGsap = true }) {
   const style = getStyle(styleId);

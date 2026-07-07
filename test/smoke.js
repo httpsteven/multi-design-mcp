@@ -37,14 +37,14 @@ const biz = {
   accentColor: "#b98a4e"
 };
 
-await check("tools/list exposes all 14 tools", async () => {
+await check("tools/list exposes all 16 tools", async () => {
   const { tools } = await client.listTools();
   const names = tools.map((t) => t.name).sort();
   const expected = [
     "bootstrap_website", "compose_build_prompt", "create_design_system", "generate_variations",
     "get_design_style", "get_design_trends", "get_page_blueprint",
     "list_design_styles", "list_page_blueprints", "plan_site",
-    "quality_standards", "recommend_stack", "recommend_style", "scaffold_page", "scaffold_site"
+    "quality_standards", "recommend_stack", "recommend_style", "scaffold_page", "scaffold_site", "scaffold_project"
   ];
   for (const e of expected) if (!names.includes(e)) throw new Error(`missing tool ${e}`);
 });
@@ -363,6 +363,56 @@ await check("form rules + CTA strategy thread into briefs and quality_standards"
   if (about.content[0].text.includes("Form UX Rules")) throw new Error("non-form page should not carry form rules");
   const q = parse(await client.callTool({ name: "quality_standards", arguments: { section: "forms" } }));
   if (!q.formRules?.some((r) => r.includes("user-invalid"))) throw new Error("forms section missing");
+});
+
+await check("framer-feel: spring token, tap feedback, recipe, motion rule", async () => {
+  const ds = parse(await client.callTool({ name: "create_design_system", arguments: { styleId: "editorial-luxury" } }));
+  if (!ds.cssVariables.includes("--ease-spring: linear(")) throw new Error("spring token missing from design system");
+  const out = parse(await client.callTool({ name: "scaffold_page", arguments: { styleId: "tech-precision", pageType: "home", business: biz } }));
+  for (const needle of ["--ease-spring: linear(", ".cta:active, .mcb-btn:active { transform: scale(.96); }", "transform .5s var(--ease-spring)"]) {
+    if (!out.html.includes(needle)) throw new Error(`scaffold missing '${needle}'`);
+  }
+  const recipe = parse(await client.callTool({ name: "recommend_stack", arguments: { need: "framer-feel-motion" } }));
+  for (const needle of ["@starting-style", "Flip", "startViewTransition", "--ease-spring"]) {
+    if (!recipe.recipe.recipe.includes(needle)) throw new Error(`recipe missing '${needle}'`);
+  }
+  const brief = await client.callTool({ name: "compose_build_prompt", arguments: { styleId: "editorial-luxury", pageType: "home", business: biz } });
+  if (!brief.content[0].text.includes("Framer-feel without Framer")) throw new Error("motion rule missing from brief");
+});
+
+await check("scaffold_project emits a complete, valid Vite Node project", async () => {
+  const proj = parse(await client.callTool({
+    name: "scaffold_project",
+    arguments: {
+      styleId: "craftsman-trust",
+      business: { name: "Vitrelora Glass Co.", industry: "glass company", language: "bilingual en/es" },
+      pages: [{ pageType: "home" }, { pageType: "services" }, { pageType: "contact" }]
+    }
+  }));
+  const byPath = Object.fromEntries(proj.files.map((f) => [f.path, f.content]));
+  for (const req of ["package.json", "vite.config.js", ".gitignore", ".github/workflows/deploy.yml", "src/js/config.js", "README.md", "index.html", "services.html", "contact.html"]) {
+    if (!(req in byPath)) throw new Error(`project missing ${req}`);
+  }
+  const pkg = JSON.parse(byPath["package.json"]);
+  if (pkg.name !== "vitrelora-glass-co") throw new Error(`bad pkg name ${pkg.name}`);
+  if (!pkg.scripts.dev || !pkg.scripts.build || !pkg.devDependencies.vite) throw new Error("package.json scripts/deps incomplete");
+  if (pkg.dependencies) throw new Error("should have zero runtime dependencies");
+  // vite config must register every html page as a build input
+  for (const entry of ["index.html", "services.html", "contact.html"]) {
+    if (!byPath["vite.config.js"].includes(entry)) throw new Error(`vite input missing ${entry}`);
+  }
+  if (!byPath["vite.config.js"].includes('base: "./"')) throw new Error("vite base not relative");
+  if (!byPath["src/js/config.js"].includes("whatsapp")) throw new Error("config.js missing contact fields");
+  if (!byPath["src/js/config.js"].includes("I18N")) throw new Error("bilingual project config missing i18n note");
+  if (proj.project.type !== "Vite static site (Node project)") throw new Error("project type wrong");
+});
+
+await check("briefs force the Vite project structure", async () => {
+  const res = await client.callTool({ name: "compose_build_prompt", arguments: { styleId: "editorial-luxury", pageType: "home", business: biz } });
+  const t = res.content[0].text;
+  for (const needle of ["Project Structure Mandate", "scaffold_project", "vite.config.js", "src/js/config.js", "npm run build"]) {
+    if (!t.includes(needle)) throw new Error(`brief missing '${needle}'`);
+  }
 });
 
 await check("prompts/list exposes premium-website", async () => {
